@@ -3,12 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Site Web</title>
+    <title>Projet Silex - Gestionnaire de Tâches</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Source+Code+Pro:wght@400;500&family=Creepster&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>Bienvenue sur mon site</h1>
+    <!-- Effet de traînée du curseur -->
+    <div class="cursor-trail"></div>
+    
+    <!-- Navigation principale -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <h1 class="logo breathing">PROJET SILEX</h1>
+            <div class="nav-links">
+                <button class="nav-btn active breathing" data-page="home">Accueil</button>
+                <button class="nav-btn breathing" data-page="tasks">Tâches</button>
+                <button class="nav-btn breathing" data-page="management">Management</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page d'accueil -->
+    <main class="page active" id="home-page">
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title glitch">PROJET SILEX</h1>
+                <div class="hero-subtitle">
+                    <span class="typing-text">Gestionnaire de Tâches Organiques</span>
+                </div>
+                <div class="hero-description">
+                    <p>Bienvenue dans l'antre de la productivité. Projet Silex est un outil de gestion de tâches 
+                    conçu pour suivre vos projets avec une précision chirurgicale. Chaque tâche pulse de vie, 
+                    évolue et se transforme selon vos besoins.</p>
+                    
+                    <div class="features-grid">
+                        <div class="feature-card breathing">
+                            <h3>Suivi Temporel</h3>
+                            <p>Deadlines avec compte à rebours automatique</p>
+                        </div>
+                        <div class="feature-card breathing">
+                            <h3>États Dynamiques</h3>
+                            <p>4 états d'avancement avec transitions fluides</p>
+                        </div>
+                        <div class="feature-card breathing">
+                            <h3>Progression Visuelle</h3>
+                            <p>Barres de progression organiques qui évoluent</p>
+                        </div>
+                        <div class="feature-card breathing">
+                            <h3>Sauvegarde Locale</h3>
+                            <p>Vos données persistent dans les méandres du navigateur</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="cta-button breathing" onclick="switchPage('tasks')">
+                    <span>Commencer</span>
+                    <div class="blood-drip"></div>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Page de gestion des tâches -->
+    <main class="page" id="tasks-page">
+        <div class="tasks-container">
+            <h2 class="page-title">Gestionnaire de Tâches</h2>
+            
+            <!-- Formulaire d'ajout de tâche -->
+            <div class="task-form-container">
+                <h3>Créer une nouvelle tâche</h3>
+                <form id="task-form" class="task-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="task-title">Titre de la tâche</label>
+                            <input type="text" id="task-title" required class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="task-deadline">Deadline</label>
+                            <input type="date" id="task-deadline" required class="form-input">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="task-status">Avancement</label>
+                            <select id="task-status" class="form-select">
+                                <option value="not-started">Pas commencé</option>
+                                <option value="in-progress">En cours</option>
+                                <option value="standby">Stand by</option>
+                                <option value="completed">Terminé</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-domain">Domaine</label>
+                            <select id="task-domain" class="form-select">
+                                <option value="kyf">KYF</option>
+                                <option value="development">Développement</option>
+                                <option value="design">Design</option>
+                                <option value="marketing">Marketing</option>
+                                <option value="research">Recherche</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="task-condition">Condition</label>
+                        <textarea id="task-condition" class="form-textarea" placeholder="Décrivez les conditions ou contraintes de cette tâche..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="task-duration">Durée estimée</label>
+                            <select id="task-duration" class="form-select">
+                                <option value="15min">15 minutes</option>
+                                <option value="30min">30 minutes</option>
+                                <option value="1h">1 heure</option>
+                                <option value="2h">2 heures</option>
+                                <option value="4h">4 heures</option>
+                                <option value="1d">1 jour</option>
+                                <option value="2d">2 jours</option>
+                                <option value="1w">1 semaine</option>
+                                <option value="2w">2 semaines</option>
+                                <option value="1m">1 mois</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-difficulty">Difficulté (1-10)</label>
+                            <input type="range" id="task-difficulty" min="1" max="10" value="5" class="form-range">
+                            <span class="range-value" id="difficulty-value">5</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="task-priority">Priorité (1-100)</label>
+                            <input type="range" id="task-priority" min="1" max="100" value="50" class="form-range">
+                            <span class="range-value" id="priority-value">50</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-assignee">Assignation</label>
+                            <input type="text" id="task-assignee" class="form-input" placeholder="Nom de l'assigné">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-button breathing">
+                        <span>Créer la tâche</span>
+                        <div class="blood-drip"></div>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Liste des tâches -->
+            <div class="tasks-list-container">
+                <h3>Vos tâches</h3>
+                <div class="tasks-filter">
+                    <button class="filter-btn active" data-filter="all">Toutes</button>
+                    <button class="filter-btn" data-filter="not-started">Pas commencé</button>
+                    <button class="filter-btn" data-filter="in-progress">En cours</button>
+                    <button class="filter-btn" data-filter="standby">Stand by</button>
+                    <button class="filter-btn" data-filter="completed">Terminé</button>
+                </div>
+                <div id="tasks-list" class="tasks-list">
+                    <!-- Les tâches seront ajoutées dynamiquement ici -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Page Management -->
+    <main class="page" id="management-page">
+        <div class="management-container">
+            <h2 class="page-title">Management</h2>
+            <div class="placeholder-content">
+                <div class="placeholder-card breathing">
+                    <h3>Zone en développement</h3>
+                    <p>Cette section sera développée dans les futures versions du projet.</p>
+                    <div class="placeholder-animation">
+                        <div class="organic-blob"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de détails de tâche -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content breathing">
+            <span class="close">&times;</span>
+            <div id="modal-body">
+                <!-- Contenu dynamique du modal -->
+            </div>
+        </div>
+    </div>
 
     <script src="assets/js/main.js"></script>
 </body>
