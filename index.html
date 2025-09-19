@@ -3,8 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Projet Silex - Gestionnaire de tâches organiques avec interface horror, sous-tâches hiérarchiques, sons immersifs et analytics en temps réel">
+    <meta name="keywords" content="gestionnaire tâches, productivité, horror, interface organique, sous-tâches, analytics">
+    <meta name="author" content="Projet Silex">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Projet Silex - Gestionnaire de Tâches Organiques">
+    <meta property="og:description" content="Interface horror immersive pour la gestion de tâches avec sous-tâches, sons organiques et analytics avancées">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    
+    <!-- Performance optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="js/main.js" as="script">
+    <link rel="preload" href="assets/images/logo.svg" as="image">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icônes pour différentes plateformes -->
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <link rel="apple-touch-icon" href="assets/images/icon-192x192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Couleur de thème pour les navigateurs mobiles -->
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="msapplication-navbutton-color" content="#1a1a1a">
+    
     <title>Projet Silex - Gestionnaire de Tâches</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Source+Code+Pro:wght@400;500&family=Creepster&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -14,11 +46,17 @@
     <!-- Navigation principale -->
     <nav class="main-nav">
         <div class="nav-container">
-            <h1 class="logo breathing">PROJET SILEX</h1>
+            <div class="logo-container">
+                <img src="assets/images/logo.svg" alt="Projet Silex" class="logo-img breathing">
+            </div>
             <div class="nav-links">
-                <button class="nav-btn active breathing" data-page="home">Accueil</button>
-                <button class="nav-btn breathing" data-page="tasks">Tâches</button>
-                <button class="nav-btn breathing" data-page="management">Management</button>
+                <a href="index.html" class="nav-btn active breathing">Accueil</a>
+                <a href="tasks.html" class="nav-btn breathing">Tâches</a>
+                <a href="management.html" class="nav-btn breathing">Management</a>
+                <!-- Bouton audio -->
+                <button id="audio-toggle" class="audio-btn breathing" title="Activer/Désactiver les sons">
+                    <span class="audio-icon">🔊</span>
+                </button>
             </div>
         </div>
     </nav>
@@ -41,161 +79,29 @@
                             <h3>Suivi Temporel</h3>
                             <p>Deadlines avec compte à rebours automatique</p>
                         </div>
-                        <div class="feature-card breathing">
-                            <h3>États Dynamiques</h3>
+                        <div class="feature-card breathing morph-on-hover floating-particles cascade-item">
+                            <h3 class="text-reveal">États Dynamiques</h3>
                             <p>4 états d'avancement avec transitions fluides</p>
                         </div>
-                        <div class="feature-card breathing">
-                            <h3>Progression Visuelle</h3>
+                        <div class="feature-card breathing morph-on-hover floating-particles cascade-item">
+                            <h3 class="text-reveal">Progression Visuelle</h3>
                             <p>Barres de progression organiques qui évoluent</p>
                         </div>
-                        <div class="feature-card breathing">
-                            <h3>Sauvegarde Locale</h3>
+                        <div class="feature-card breathing morph-on-hover floating-particles cascade-item">
+                            <h3 class="text-reveal">Sauvegarde Locale</h3>
                             <p>Vos données persistent dans les méandres du navigateur</p>
                         </div>
                     </div>
                 </div>
                 
-                <button class="cta-button breathing" onclick="switchPage('tasks')">
+                <a href="tasks.html" class="cta-button breathing advanced-hover glow-pulse">
                     <span>Commencer</span>
                     <div class="blood-drip"></div>
-                </button>
+                </a>
             </div>
         </div>
     </main>
 
-    <!-- Page de gestion des tâches -->
-    <main class="page" id="tasks-page">
-        <div class="tasks-container">
-            <h2 class="page-title">Gestionnaire de Tâches</h2>
-            
-            <!-- Formulaire d'ajout de tâche -->
-            <div class="task-form-container">
-                <h3>Créer une nouvelle tâche</h3>
-                <form id="task-form" class="task-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="task-title">Titre de la tâche</label>
-                            <input type="text" id="task-title" required class="form-input">
-                        </div>
-                        <div class="form-group">
-                            <label for="task-deadline">Deadline</label>
-                            <input type="date" id="task-deadline" required class="form-input">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="task-status">Avancement</label>
-                            <select id="task-status" class="form-select">
-                                <option value="not-started">Pas commencé</option>
-                                <option value="in-progress">En cours</option>
-                                <option value="standby">Stand by</option>
-                                <option value="completed">Terminé</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="task-domain">Domaine</label>
-                            <select id="task-domain" class="form-select">
-                                <option value="kyf">KYF</option>
-                                <option value="development">Développement</option>
-                                <option value="design">Design</option>
-                                <option value="marketing">Marketing</option>
-                                <option value="research">Recherche</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="task-condition">Condition</label>
-                        <textarea id="task-condition" class="form-textarea" placeholder="Décrivez les conditions ou contraintes de cette tâche..."></textarea>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="task-duration">Durée estimée</label>
-                            <select id="task-duration" class="form-select">
-                                <option value="15min">15 minutes</option>
-                                <option value="30min">30 minutes</option>
-                                <option value="1h">1 heure</option>
-                                <option value="2h">2 heures</option>
-                                <option value="4h">4 heures</option>
-                                <option value="1d">1 jour</option>
-                                <option value="2d">2 jours</option>
-                                <option value="1w">1 semaine</option>
-                                <option value="2w">2 semaines</option>
-                                <option value="1m">1 mois</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="task-difficulty">Difficulté (1-10)</label>
-                            <input type="range" id="task-difficulty" min="1" max="10" value="5" class="form-range">
-                            <span class="range-value" id="difficulty-value">5</span>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="task-priority">Priorité (1-100)</label>
-                            <input type="range" id="task-priority" min="1" max="100" value="50" class="form-range">
-                            <span class="range-value" id="priority-value">50</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="task-assignee">Assignation</label>
-                            <input type="text" id="task-assignee" class="form-input" placeholder="Nom de l'assigné">
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="submit-button breathing">
-                        <span>Créer la tâche</span>
-                        <div class="blood-drip"></div>
-                    </button>
-                </form>
-            </div>
-            
-            <!-- Liste des tâches -->
-            <div class="tasks-list-container">
-                <h3>Vos tâches</h3>
-                <div class="tasks-filter">
-                    <button class="filter-btn active" data-filter="all">Toutes</button>
-                    <button class="filter-btn" data-filter="not-started">Pas commencé</button>
-                    <button class="filter-btn" data-filter="in-progress">En cours</button>
-                    <button class="filter-btn" data-filter="standby">Stand by</button>
-                    <button class="filter-btn" data-filter="completed">Terminé</button>
-                </div>
-                <div id="tasks-list" class="tasks-list">
-                    <!-- Les tâches seront ajoutées dynamiquement ici -->
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Page Management -->
-    <main class="page" id="management-page">
-        <div class="management-container">
-            <h2 class="page-title">Management</h2>
-            <div class="placeholder-content">
-                <div class="placeholder-card breathing">
-                    <h3>Zone en développement</h3>
-                    <p>Cette section sera développée dans les futures versions du projet.</p>
-                    <div class="placeholder-animation">
-                        <div class="organic-blob"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Modal de détails de tâche -->
-    <div id="task-modal" class="modal">
-        <div class="modal-content breathing">
-            <span class="close">&times;</span>
-            <div id="modal-body">
-                <!-- Contenu dynamique du modal -->
-            </div>
-        </div>
-    </div>
-
-    <script src="assets/js/main.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
