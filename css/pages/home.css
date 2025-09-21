@@ -1,0 +1,175 @@
+/* ===========================================
+   PAGE D'ACCUEIL PROFESSIONNELLE
+   =========================================== */
+.hero-section {
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+    padding: var(--spacing-3xl) var(--spacing-xl);
+}
+
+.hero-title {
+    font-family: var(--font-title);
+    font-size: clamp(var(--text-4xl), 8vw, var(--text-5xl));
+    font-weight: 600;
+    color: var(--rouge-sang);
+    text-shadow: 0 0 30px rgba(163, 22, 33, 0.5);
+    margin-bottom: var(--spacing-lg);
+    letter-spacing: 0.02em;
+}
+
+.hero-subtitle {
+    font-family: var(--font-subtitle);
+    font-size: var(--text-xl);
+    color: var(--gris-clair);
+    margin-bottom: var(--spacing-2xl);
+    position: relative;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.typing-text {
+    border-right: 2px solid var(--rouge-sang);
+    padding-right: var(--spacing-sm);
+    animation: typing 3s steps(30) infinite alternate;
+}
+
+@keyframes typing {
+    0% { border-color: var(--rouge-sang); }
+    50% { border-color: transparent; }
+    100% { border-color: var(--rouge-sang); }
+}
+
+.hero-description {
+    max-width: 900px;
+    margin: 0 auto var(--spacing-3xl);
+    font-size: var(--text-lg);
+    line-height: 1.8;
+    color: var(--gris-clair);
+    font-weight: 300;
+}
+
+.hero-description p {
+    margin-bottom: var(--spacing-lg);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
+    margin: var(--spacing-3xl) 0;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.feature-card {
+    background: var(--background-card);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    text-align: center;
+    transition: var(--transition-organic);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--rouge-sang) 0%, var(--pourpre-sombre) 100%);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+.feature-card:hover {
+    border-color: var(--rouge-sang);
+    box-shadow: var(--shadow-horror);
+    transform: translateY(-8px);
+}
+
+.feature-card h3 {
+    color: var(--blanc-os);
+    font-family: var(--font-title);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    margin-bottom: var(--spacing-md);
+}
+
+.feature-card p {
+    color: var(--gris-clair);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+}
+
+.cta-button {
+    background: linear-gradient(135deg, var(--rouge-sang) 0%, var(--rouge-sang-clair) 100%);
+    color: var(--blanc-os);
+    border: none;
+    padding: var(--spacing-lg) var(--spacing-3xl);
+    font-size: var(--text-lg);
+    font-family: var(--font-body);
+    font-weight: 600;
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    transition: var(--transition-organic);
+    position: relative;
+    overflow: hidden;
+    margin-top: var(--spacing-2xl);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: var(--shadow-lg);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.cta-button:hover::before {
+    left: 100%;
+}
+
+.cta-button:hover {
+    box-shadow: var(--shadow-horror), var(--shadow-xl);
+    transform: translateY(-3px) scale(1.02);
+}
+
+.cta-button:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.blood-drip {
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    width: 2px;
+    height: 6px;
+    background: var(--rouge-sang-clair);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    transform: translateX(-50%);
+    animation: drip 3s ease-in-out infinite;
+    opacity: 0.7;
+}
+
+@keyframes drip {
+    0%, 100% { opacity: 0; transform: translateX(-50%) translateY(0); }
+    50% { opacity: 0.7; transform: translateX(-50%) translateY(3px); }
+}

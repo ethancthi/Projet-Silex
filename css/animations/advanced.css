@@ -1,0 +1,249 @@
+/* ===========================================
+   ANIMATIONS AVANCÉES ET MICRO-INTERACTIONS
+   =========================================== */
+
+/* Animation de particules flottantes */
+@keyframes float-particles {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+        opacity: 0.8;
+    }
+}
+
+.floating-particles::before,
+.floating-particles::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--rouge-sang);
+    border-radius: 50%;
+    animation: float-particles 6s ease-in-out infinite;
+    z-index: -1;
+}
+
+.floating-particles::before {
+    top: 10%;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.floating-particles::after {
+    top: 80%;
+    right: 30%;
+    animation-delay: 3s;
+}
+
+/* Animation de morphing pour les cartes */
+@keyframes morph-card {
+    0%, 100% {
+        border-radius: var(--radius-xl);
+        transform: scale(1);
+    }
+    25% {
+        border-radius: 30px 10px 30px 10px;
+        transform: scale(1.01);
+    }
+    50% {
+        border-radius: 10px 30px 10px 30px;
+        transform: scale(1.02);
+    }
+    75% {
+        border-radius: 25px 15px 25px 15px;
+        transform: scale(1.01);
+    }
+}
+
+.morph-on-hover:hover {
+    animation: morph-card 2s ease-in-out infinite;
+}
+
+/* Animation de text reveal */
+@keyframes text-reveal {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        width: 100%;
+        opacity: 1;
+    }
+}
+
+.text-reveal {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: text-reveal 1.5s ease-out;
+}
+
+/* Animation de progress bar organique */
+@keyframes organic-progress {
+    0%, 100% {
+        transform: scaleY(1);
+    }
+    50% {
+        transform: scaleY(1.2);
+    }
+}
+
+.progress-fill.organic {
+    animation: organic-progress 3s ease-in-out infinite;
+    transform-origin: center;
+}
+
+/* Animation de slide révélant */
+@keyframes slide-reveal {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.slide-reveal {
+    animation: slide-reveal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Animation de rotation organique */
+@keyframes organic-rotation {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    25% {
+        transform: rotate(90deg) scale(1.05);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.1);
+    }
+    75% {
+        transform: rotate(270deg) scale(1.05);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+.organic-rotate {
+    animation: organic-rotation 8s linear infinite;
+}
+
+/* Animation de bounce organique */
+@keyframes organic-bounce {
+    0%, 100% {
+        transform: translateY(0) scaleY(1);
+    }
+    50% {
+        transform: translateY(-10px) scaleY(0.95);
+    }
+}
+
+.organic-bounce {
+    animation: organic-bounce 2s ease-in-out infinite;
+}
+
+/* Animation de fade-in en cascade */
+@keyframes cascade-fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cascade-item {
+    animation: cascade-fade-in 0.6s ease-out;
+}
+
+.cascade-item:nth-child(1) { animation-delay: 0.1s; }
+.cascade-item:nth-child(2) { animation-delay: 0.2s; }
+.cascade-item:nth-child(3) { animation-delay: 0.3s; }
+.cascade-item:nth-child(4) { animation-delay: 0.4s; }
+.cascade-item:nth-child(5) { animation-delay: 0.5s; }
+
+/* Animation d'hover avancé pour les boutons */
+.advanced-hover {
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-normal);
+}
+
+.advanced-hover::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    transition: all 0.6s ease;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.advanced-hover:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Animation de loading organique */
+@keyframes organic-loading {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+        border-radius: 50%;
+    }
+    25% {
+        transform: scale(0.8) rotate(90deg);
+        border-radius: 40% 60% 40% 60%;
+    }
+    50% {
+        transform: scale(1.2) rotate(180deg);
+        border-radius: 60% 40% 60% 40%;
+    }
+    75% {
+        transform: scale(0.9) rotate(270deg);
+        border-radius: 30% 70% 30% 70%;
+    }
+}
+
+.organic-loader {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(45deg, var(--rouge-sang), var(--pourpre-sombre));
+    animation: organic-loading 2s ease-in-out infinite;
+}
+
+/* Animation de notification améliorée */
+.notification {
+    position: relative;
+    overflow: hidden;
+}
+
+.notification::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    animation: notification-sweep 2s ease-in-out infinite;
+}
+
+@keyframes notification-sweep {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}

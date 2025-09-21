@@ -1,0 +1,326 @@
+/* ===========================================
+   PAGE MANAGEMENT PROFESSIONNELLE
+   =========================================== */
+.management-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-xl);
+}
+
+/* Tableau de bord */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.stats-card, .domain-filter-card, .assignment-card {
+    background: var(--background-card);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+.stats-card::before, .domain-filter-card::before, .assignment-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--rouge-sang) 0%, var(--pourpre-sombre) 50%, var(--rouge-sang) 100%);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.stats-card h3, .domain-filter-card h3, .assignment-card h3 {
+    color: var(--blanc-os);
+    font-family: var(--font-title);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+/* Statistiques */
+.stats-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+}
+
+.stat-item {
+    text-align: center;
+    padding: var(--spacing-md);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-secondary);
+}
+
+.stat-value {
+    display: block;
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    color: var(--rouge-sang);
+    font-family: var(--font-title);
+    animation: count-up 1s ease-out;
+}
+
+.stat-label {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--gris-clair);
+    margin-top: var(--spacing-xs);
+}
+
+/* Filtres de domaine */
+.domain-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    justify-content: center;
+}
+
+.domain-filter {
+    background: transparent;
+    color: var(--gris-clair);
+    border: 1px solid var(--border-secondary);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    font-size: var(--text-sm);
+    font-weight: 500;
+}
+
+.domain-filter:hover, .domain-filter.active {
+    background: var(--rouge-sang);
+    color: var(--blanc-os);
+    border-color: var(--rouge-sang);
+    transform: translateY(-2px);
+}
+
+/* Assignation rapide */
+.assignment-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.assignment-content .form-select {
+    background: var(--background-secondary);
+    border: 1px solid var(--border-secondary);
+    color: var(--blanc-os);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+}
+
+.assignment-content .submit-button {
+    margin-top: 0;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--text-sm);
+}
+
+/* Tableau des tâches */
+.domain-tables {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.domain-tables h3 {
+    color: var(--blanc-os);
+    font-family: var(--font-title);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.table-container {
+    background: var(--background-card);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    position: relative;
+    backdrop-filter: blur(10px);
+    overflow-x: auto;
+}
+
+.table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--rouge-sang) 0%, var(--pourpre-sombre) 50%, var(--rouge-sang) 100%);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.management-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+}
+
+.management-table th {
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--rouge-sang);
+    padding: var(--spacing-md);
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-secondary);
+    position: sticky;
+    top: 0;
+}
+
+.management-table td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-secondary);
+    color: var(--blanc-os);
+    vertical-align: middle;
+}
+
+.management-table tr:hover {
+    background: rgba(163, 22, 33, 0.1);
+}
+
+.table-progress-bar {
+    width: 60px;
+    height: 6px;
+    background: var(--noir-profond);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    position: relative;
+}
+
+.table-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rouge-sang) 0%, var(--rouge-sang-clair) 100%);
+    transition: width 0.3s ease;
+}
+
+.table-status-badge {
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.table-priority {
+    font-weight: 600;
+    color: var(--rouge-sang-clair);
+}
+
+.table-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.table-action-btn {
+    background: transparent;
+    border: 1px solid var(--border-secondary);
+    color: var(--gris-clair);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    font-size: 11px;
+}
+
+.table-action-btn:hover {
+    background: var(--rouge-sang);
+    color: var(--blanc-os);
+    border-color: var(--rouge-sang);
+}
+
+/* Analyse par équipe */
+.team-analysis {
+    background: var(--background-card);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+.team-analysis::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--rouge-sang) 0%, var(--pourpre-sombre) 50%, var(--rouge-sang) 100%);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.team-analysis h3 {
+    color: var(--blanc-os);
+    font-family: var(--font-title);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.team-member-card {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    text-align: center;
+}
+
+.team-member-name {
+    color: var(--blanc-os);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+}
+
+.team-member-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--spacing-md);
+    font-size: var(--text-sm);
+}
+
+.team-stat {
+    text-align: center;
+}
+
+.team-stat-value {
+    display: block;
+    color: var(--rouge-sang);
+    font-weight: 600;
+}
+
+.team-stat-label {
+    color: var(--gris-clair);
+    font-size: var(--text-xs);
+}
+
+/* Animation de stats counter */
+@keyframes count-up {
+    0% { 
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+}

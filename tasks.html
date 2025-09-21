@@ -28,7 +28,7 @@
     <meta name="theme-color" content="#1a1a1a">
     <meta name="msapplication-navbutton-color" content="#1a1a1a">
     
-    <title>Projet Silex - Gestion des Tâches</title>
+    <title>Projet Silex - Gestion des Tâches & Management</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Source+Code+Pro:wght@400;500&family=Creepster&display=swap" rel="stylesheet">
 </head>
@@ -44,8 +44,7 @@
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-btn breathing">Accueil</a>
-                <a href="tasks.html" class="nav-btn active breathing">Tâches</a>
-                <a href="management.html" class="nav-btn breathing">Management</a>
+                <a href="tasks.html" class="nav-btn active breathing">Tâches & Management</a>
                 <!-- Bouton audio -->
                 <button id="audio-toggle" class="audio-btn breathing" title="Activer/Désactiver les sons">
                     <span class="audio-icon">🔊</span>
@@ -57,9 +56,81 @@
     <!-- Page de gestion des tâches -->
     <main class="page active" id="tasks-page">
         <div class="tasks-container">
-            <h2 class="page-title">Gestionnaire de Tâches</h2>
+            <h2 class="page-title">Gestionnaire de Tâches & Management</h2>
             
-            <!-- Formulaire d'ajout de tâche -->
+            <!-- Tableau de bord des statistiques - EN HAUT -->
+            <div class="dashboard-container">
+                <h3>Tableau de bord</h3>
+                <div class="dashboard-grid">
+                    <!-- Statistiques globales -->
+                    <div class="stats-card breathing">
+                        <h4>Vue d'ensemble</h4>
+                        <div class="stats-content">
+                            <div class="stat-item">
+                                <span class="stat-value" id="total-tasks">0</span>
+                                <span class="stat-label">Total tâches</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="completed-tasks">0</span>
+                                <span class="stat-label">Terminées</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="pending-tasks">0</span>
+                                <span class="stat-label">En cours</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="overdue-tasks">0</span>
+                                <span class="stat-label">En retard</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tâches prioritaires -->
+                    <div class="priority-card breathing">
+                        <h4>Tâches prioritaires</h4>
+                        <div id="priority-tasks" class="priority-tasks-list">
+                            <!-- Les tâches prioritaires seront ajoutées dynamiquement -->
+                        </div>
+                    </div>
+
+                    <!-- Assignation rapide -->
+                    <div class="assignment-card breathing">
+                        <h4>Assignation rapide</h4>
+                        <div class="assignment-content">
+                            <select id="quick-assign-task" class="form-select">
+                                <option value="">Sélectionner une tâche...</option>
+                            </select>
+                            <select id="quick-assign-user" class="form-select">
+                                <option value="">Assigné à...</option>
+                                <option value="Designer Principal">Designer Principal</option>
+                                <option value="Développeur Backend">Développeur Backend</option>
+                                <option value="Développeur Frontend">Développeur Frontend</option>
+                                <option value="UX Researcher">UX Researcher</option>
+                                <option value="Chef de Projet">Chef de Projet</option>
+                                <option value="Testeur QA">Testeur QA</option>
+                            </select>
+                            <button id="quick-assign-btn" class="submit-button breathing">Assigner</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liste des tâches existantes -->
+            <div class="tasks-list-container">
+                <h3>Vos tâches</h3>
+                <div class="tasks-filter">
+                    <button class="filter-btn active" data-filter="all">Toutes</button>
+                    <button class="filter-btn" data-filter="not-started">Pas commencé</button>
+                    <button class="filter-btn" data-filter="in-progress">En cours</button>
+                    <button class="filter-btn" data-filter="standby">Stand by</button>
+                    <button class="filter-btn" data-filter="completed">Terminé</button>
+                </div>
+                <div id="tasks-list" class="tasks-list">
+                    <!-- Les tâches seront ajoutées dynamiquement ici -->
+                </div>
+            </div>
+            
+            <!-- Formulaire d'ajout de tâche - EN BAS (scroll pour voir) -->
             <div class="task-form-container">
                 <h3>Créer une nouvelle tâche</h3>
                 <form id="task-form" class="task-form">
@@ -156,21 +227,6 @@
                     </button>
                 </form>
             </div>
-            
-            <!-- Liste des tâches -->
-            <div class="tasks-list-container">
-                <h3>Vos tâches</h3>
-                <div class="tasks-filter">
-                    <button class="filter-btn active" data-filter="all">Toutes</button>
-                    <button class="filter-btn" data-filter="not-started">Pas commencé</button>
-                    <button class="filter-btn" data-filter="in-progress">En cours</button>
-                    <button class="filter-btn" data-filter="standby">Stand by</button>
-                    <button class="filter-btn" data-filter="completed">Terminé</button>
-                </div>
-                <div id="tasks-list" class="tasks-list">
-                    <!-- Les tâches seront ajoutées dynamiquement ici -->
-                </div>
-            </div>
         </div>
     </main>
 
@@ -184,6 +240,6 @@
         </div>
     </div>
 
-    <script src="js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

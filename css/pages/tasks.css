@@ -1,0 +1,353 @@
+/* ===========================================
+   PAGE DE GESTION DES TÂCHES PROFESSIONNELLE
+   =========================================== */
+.tasks-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-xl);
+}
+
+.task-form-container {
+    background: var(--background-card);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-3xl);
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.task-form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--rouge-sang) 0%, var(--pourpre-sombre) 50%, var(--rouge-sang) 100%);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.task-form-container h3 {
+    color: var(--blanc-os);
+    font-family: var(--font-title);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+}
+
+/* LISTE DES TÂCHES PROFESSIONNELLE */
+.tasks-list-container {
+    background: var(--background-card);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.tasks-list-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--rouge-sang) 0%, var(--pourpre-sombre) 50%, var(--rouge-sang) 100%);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.tasks-list-container h3 {
+    color: var(--blanc-os);
+    font-family: var(--font-title);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+}
+
+.tasks-filter {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.filter-btn {
+    background: transparent;
+    color: var(--gris-clair);
+    border: 1px solid var(--border-secondary);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(163, 22, 33, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.filter-btn:hover::before {
+    left: 100%;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background: linear-gradient(135deg, var(--rouge-sang) 0%, var(--rouge-sang-clair) 100%);
+    border-color: var(--rouge-sang);
+    color: var(--blanc-os);
+    transform: translateY(-1px);
+}
+
+.tasks-list {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.task-card {
+    background: var(--background-secondary);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    transition: var(--transition-organic);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+}
+
+.task-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--rouge-sang) 0%, var(--pourpre-sombre) 100%);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.task-card:hover::before {
+    transform: scaleY(1);
+}
+
+.task-card:hover {
+    border-color: var(--rouge-sang);
+    box-shadow: var(--shadow-horror);
+    transform: translateY(-4px);
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-lg);
+    gap: var(--spacing-md);
+}
+
+.task-title {
+    color: var(--blanc-os);
+    font-family: var(--font-title);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    margin: 0;
+    flex: 1;
+}
+
+.task-status {
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}
+
+.status-not-started { 
+    background: linear-gradient(135deg, var(--gris-metal) 0%, var(--border-secondary) 100%);
+    color: var(--blanc-os);
+}
+.status-in-progress { 
+    background: linear-gradient(135deg, var(--vert-maladif) 0%, var(--vert-toxique) 100%);
+    color: var(--blanc-os);
+}
+.status-standby { 
+    background: linear-gradient(135deg, var(--pourpre-sombre) 0%, var(--pourpre-fade) 100%);
+    color: var(--blanc-os);
+}
+.status-completed { 
+    background: linear-gradient(135deg, var(--rouge-sang) 0%, var(--rouge-sang-clair) 100%);
+    color: var(--blanc-os);
+}
+
+.task-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.task-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--text-sm);
+    padding: var(--spacing-xs) 0;
+}
+
+.task-detail strong {
+    color: var(--gris-clair);
+    font-weight: 500;
+}
+
+.task-detail span:last-child {
+    color: var(--blanc-os);
+    font-weight: 500;
+}
+
+.task-progress {
+    margin-top: var(--spacing-lg);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--gris-clair);
+}
+
+.progress-bar {
+    background: var(--noir-profond);
+    height: 8px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rouge-sang) 0%, var(--rouge-sang-clair) 100%);
+    transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    box-shadow: 0 0 10px rgba(163, 22, 33, 0.5);
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Aperçu des sous-tâches dans les cartes */
+.task-subtasks-preview {
+    margin: var(--spacing-md) 0;
+    padding: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-sm);
+}
+
+.task-subtasks-preview strong {
+    color: var(--gris-clair);
+    font-size: var(--text-sm);
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.subtasks-mini-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.subtask-mini {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--text-xs);
+    color: var(--gris-clair);
+}
+
+.subtask-mini.completed .subtask-mini-text {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.subtask-mini-checkbox {
+    color: var(--rouge-sang);
+    font-weight: bold;
+    width: 12px;
+    text-align: center;
+}
+
+.subtask-mini-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.subtasks-more {
+    font-size: var(--text-xs);
+    color: var(--gris-cendre);
+    font-style: italic;
+    margin-top: 2px;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Animation de card hover avancée */
+.task-card {
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.task-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(163, 22, 33, 0.1) 50%, 
+        transparent 100%);
+    transition: left 0.8s ease;
+}
+
+.task-card:hover::after {
+    left: 100%;
+}

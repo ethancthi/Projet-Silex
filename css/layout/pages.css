@@ -1,0 +1,35 @@
+/* ===========================================
+   PAGES ET STRUCTURE
+   =========================================== */
+.page {
+    display: none;
+    min-height: calc(100vh - 80px);
+    padding: 2rem;
+}
+
+.page.active {
+    display: block;
+}
+
+/* Page title commune */
+.page-title {
+    font-family: var(--font-title);
+    font-size: var(--text-4xl);
+    font-weight: 600;
+    color: var(--blanc-os);
+    text-align: center;
+    margin-bottom: var(--spacing-3xl);
+    text-shadow: 0 0 20px rgba(163, 22, 33, 0.3);
+    position: relative;
+}
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: -var(--spacing-md);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--rouge-sang), transparent);
+}

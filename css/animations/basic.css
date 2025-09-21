@@ -1,0 +1,62 @@
+/* ===========================================
+   ANIMATIONS DE BASE
+   =========================================== */
+
+/* Animation de respiration plus subtile */
+@keyframes breathing {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.01); }
+}
+
+.breathing {
+    animation: breathing 4s ease-in-out infinite;
+}
+
+/* Animation de pulsation pour les éléments interactifs */
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(163, 22, 33, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(163, 22, 33, 0); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Effet glitch plus subtil */
+@keyframes glitch-subtle {
+    0%, 100% { transform: translate(0); text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); }
+    20% { transform: translate(-1px, 1px); text-shadow: 2px 2px 4px rgba(163, 22, 33, 0.4); }
+    40% { transform: translate(1px, -1px); text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); }
+    60% { transform: translate(-1px, -1px); text-shadow: 2px 2px 4px rgba(163, 22, 33, 0.2); }
+    80% { transform: translate(1px, 1px); text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); }
+}
+
+.glitch {
+    animation: glitch-subtle 6s ease-in-out infinite;
+}
+
+/* Animation de glow pulsant */
+@keyframes glow-pulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(163, 22, 33, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(163, 22, 33, 0.8), 0 0 50px rgba(163, 22, 33, 0.4);
+    }
+}
+
+.glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Animation de typing dynamique */
+@keyframes cursor-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.typing-animation::after {
+    content: '|';
+    animation: cursor-blink 1s infinite;
+    color: var(--rouge-sang);
+}

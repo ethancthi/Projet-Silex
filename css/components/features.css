@@ -1,0 +1,36 @@
+/* ===========================================
+   FEATURE PREVIEW
+   =========================================== */
+.feature-preview-item {
+    background: var(--background-secondary);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    text-align: center;
+    transition: var(--transition-organic);
+}
+
+.feature-preview-item:hover {
+    border-color: var(--rouge-sang);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-horror);
+}
+
+.feature-icon {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--spacing-md);
+}
+
+.feature-preview-item h5 {
+    color: var(--blanc-os);
+    font-family: var(--font-title);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
+}
+
+.feature-preview-item p {
+    color: var(--gris-clair);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+}

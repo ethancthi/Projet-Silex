@@ -1,0 +1,59 @@
+/* ==============================================
+   OPTIMISATIONS DE PERFORMANCE
+   ============================================== */
+
+/* Lazy loading pour les images */
+img[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+img[loading="lazy"].loaded {
+    opacity: 1;
+}
+
+/* Préchargement des ressources critiques */
+.preload-critical {
+    visibility: hidden;
+    position: absolute;
+    left: -9999px;
+}
+
+/* Réduction de la complexité des animations sur les appareils moins puissants */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Performance optimisée pour les transformations */
+.gpu-accelerated {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Optimisation du rendu des polices - appliqué aux polices Google Fonts */
+* {
+    font-display: swap;
+}
+
+/* Optimisation pour les conteneurs de particules */
+.floating-particles {
+    contain: layout style paint;
+    will-change: transform;
+}
+
+/* Optimisation des animations CSS */
+.animate-on-scroll {
+    will-change: transform, opacity;
+}
+
+.animate-on-scroll.in-view {
+    will-change: auto;
+}
