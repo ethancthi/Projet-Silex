@@ -17,16 +17,16 @@
     <!-- Performance optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="css/style.css" as="style">
-    <link rel="preload" href="js/main.js" as="script">
-    <link rel="preload" href="assets/images/logo.svg" as="image">
+    <link rel="preload" href="./css/style.css" as="style">
+    <link rel="preload" href="./js/main.js" as="script">
+    <link rel="preload" href="./assets/images/logo.svg" as="image">
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="./manifest.json">
     
     <!-- Icônes pour différentes plateformes -->
-    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
-    <link rel="apple-touch-icon" href="assets/images/icon-192x192.png">
+    <link rel="icon" type="image/svg+xml" href="./assets/images/logo.svg">
+    <link rel="apple-touch-icon" href="./assets/images/icon-192x192.svg">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
@@ -36,7 +36,7 @@
     <meta name="msapplication-navbutton-color" content="#1a1a1a">
     
     <title>Projet Silex - Gestionnaire de Tâches</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Source+Code+Pro:wght@400;500&family=Creepster&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -47,11 +47,12 @@
     <nav class="main-nav">
         <div class="nav-container">
             <div class="logo-container">
-                <img src="assets/images/logo.svg" alt="Projet Silex" class="logo-img breathing">
+                <img src="./assets/images/logo.svg" alt="Projet Silex" class="logo-img breathing">
             </div>
             <div class="nav-links">
-                <a href="index.html" class="nav-btn active breathing">Accueil</a>
-                <a href="tasks.html" class="nav-btn breathing">Tâches & Management</a>
+                <a href="./index.html" class="nav-btn active breathing">Accueil</a>
+                <a href="./tasks.html" class="nav-btn breathing">Tâches</a>
+                <a href="./cahier-des-charges.html" class="nav-btn breathing">Cahier des Charges</a>
                 <!-- Bouton audio -->
                 <button id="audio-toggle" class="audio-btn breathing" title="Activer/Désactiver les sons">
                     <span class="audio-icon">🔊</span>
@@ -93,7 +94,7 @@
                     </div>
                 </div>
                 
-                <a href="tasks.html" class="cta-button breathing advanced-hover glow-pulse">
+                <a href="./tasks.html" class="cta-button breathing advanced-hover glow-pulse">
                     <span>Commencer</span>
                     <div class="blood-drip"></div>
                 </a>
@@ -101,6 +102,6 @@
         </div>
     </main>
 
-    <script type="module" src="js/main.js"></script>
+    <script type="module" src="./js/main.js"></script>
 </body>
 </html>

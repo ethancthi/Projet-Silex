@@ -2,7 +2,7 @@
 // ANIMATIONS ET EFFETS VISUELS
 // ===========================================
 
-import { performanceConfig } from '../core/config.js';
+import { CONFIG } from '../core/config.js';
 
 // ===========================================
 // EFFET DE CURSEUR PERSONNALISÉ
@@ -11,7 +11,7 @@ let cursorTrail = [];
 const maxTrailLength = 20;
 
 export function initCursorEffects() {
-    if (!performanceConfig.enableCursorEffects) return;
+    if (!CONFIG.PERFORMANCE.enableCursorEffects) return;
     
     // Créer le curseur personnalisé
     const cursor = document.createElement('div');
@@ -99,14 +99,14 @@ export function addBreathingEffect() {
 // PARTICULES D'ARRIÈRE-PLAN
 // ===========================================
 export function initParticles() {
-    if (!performanceConfig.enableParticles) return;
+    if (!CONFIG.PERFORMANCE.enableParticles) return;
     
     const particleContainer = document.createElement('div');
     particleContainer.className = 'particle-container';
     document.body.appendChild(particleContainer);
     
     // Créer les particules
-    for (let i = 0; i < performanceConfig.particleCount; i++) {
+    for (let i = 0; i < CONFIG.PERFORMANCE.particleCount; i++) {
         createParticle(particleContainer);
     }
 }
@@ -260,7 +260,7 @@ export function toggleAnimations(enable) {
 // INITIALISATION COMPLÈTE DES ANIMATIONS
 // ===========================================
 export function initAllAnimations() {
-    if (!performanceConfig.enableAnimations) {
+    if (!CONFIG.PERFORMANCE.enableAnimations) {
         toggleAnimations(false);
         return;
     }
@@ -278,7 +278,7 @@ export function initAllAnimations() {
 
 // Redémarrer les animations quand la page devient visible
 document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && performanceConfig.enableAnimations) {
+    if (!document.hidden && CONFIG.PERFORMANCE.enableAnimations) {
         addBreathingEffect();
     }
 });

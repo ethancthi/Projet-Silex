@@ -10,16 +10,16 @@
     <!-- Performance optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="css/style.css" as="style">
-    <link rel="preload" href="js/main.js" as="script">
-    <link rel="preload" href="assets/images/logo.svg" as="image">
+    <link rel="preload" href="./css/style.css" as="style">
+    <link rel="preload" href="./js/bundled-tasks.js" as="script">
+    <link rel="preload" href="./assets/images/logo.svg" as="image">
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="./manifest.json">
     
     <!-- Icônes pour différentes plateformes -->
-    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
-    <link rel="apple-touch-icon" href="assets/images/icon-192x192.png">
+    <link rel="icon" type="image/svg+xml" href="./assets/images/logo.svg">
+    <link rel="apple-touch-icon" href="./assets/images/icon-192x192.svg">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
@@ -28,8 +28,8 @@
     <meta name="theme-color" content="#1a1a1a">
     <meta name="msapplication-navbutton-color" content="#1a1a1a">
     
-    <title>Projet Silex - Gestion des Tâches & Management</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Projet Silex - Gestion des Tâches</title>
+    <link rel="stylesheet" href="./css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Source+Code+Pro:wght@400;500&family=Creepster&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -40,11 +40,12 @@
     <nav class="main-nav">
         <div class="nav-container">
             <div class="logo-container">
-                <img src="assets/images/logo.svg" alt="Projet Silex" class="logo-img breathing">
+                <img src="./assets/images/logo.svg" alt="Projet Silex" class="logo-img breathing">
             </div>
             <div class="nav-links">
-                <a href="index.html" class="nav-btn breathing">Accueil</a>
-                <a href="tasks.html" class="nav-btn active breathing">Tâches & Management</a>
+                <a href="./index.html" class="nav-btn breathing">Accueil</a>
+                <a href="./tasks.html" class="nav-btn active breathing">Tâches</a>
+                <a href="./cahier-des-charges.html" class="nav-btn breathing">Cahier des Charges</a>
                 <!-- Bouton audio -->
                 <button id="audio-toggle" class="audio-btn breathing" title="Activer/Désactiver les sons">
                     <span class="audio-icon">🔊</span>
@@ -56,7 +57,7 @@
     <!-- Page de gestion des tâches -->
     <main class="page active" id="tasks-page">
         <div class="tasks-container">
-            <h2 class="page-title">Gestionnaire de Tâches & Management</h2>
+            <h2 class="page-title">Gestionnaire de Tâches</h2>
             
             <!-- Tableau de bord des statistiques - EN HAUT -->
             <div class="dashboard-container">
@@ -207,6 +208,18 @@
                         </div>
                     </div>
                     
+                    <div class="form-group">
+                        <label for="task-caracteristique">Caractéristique du Cahier des Charges</label>
+                        <select id="task-caracteristique" class="form-select">
+                            <option value="">Aucune caractéristique liée</option>
+                            <option value="interface-horror">🎨 Interface Horror Organique</option>
+                            <option value="gestion-taches">📋 Système de Gestion des Tâches</option>
+                            <option value="dashboard-analytics">📊 Tableau de Bord Analytics</option>
+                            <option value="performance-optim">⚡ Optimisations Performance</option>
+                            <option value="architecture-modulaire">🏗️ Architecture Modulaire</option>
+                        </select>
+                    </div>
+                    
                     <!-- Section des sous-tâches -->
                     <div class="form-group">
                         <label for="task-subtasks">Sous-tâches</label>
@@ -240,6 +253,22 @@
         </div>
     </div>
 
-    <script type="module" src="js/main.js"></script>
+    <!-- Debug info -->
+    <div style="position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.8); color: #0f0; padding: 10px; font-family: monospace; font-size: 12px; border-radius: 5px; z-index: 9999;">
+        <div>🔧 Compatible Mode</div>
+        <div id="debug-status">Loading...</div>
+    </div>
+
+    <script src="./js/bundled-tasks.js"></script>
+    <script>
+        // Additional debug info
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const debugStatus = document.getElementById('debug-status');
+                const form = document.getElementById('task-form');
+                debugStatus.innerHTML = form ? '✅ Form Ready' : '❌ Form Missing';
+            }, 100);
+        });
+    </script>
 </body>
 </html>

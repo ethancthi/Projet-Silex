@@ -3,26 +3,28 @@
 // ===========================================
 
 import { CONFIG } from './config.js';
-import { setupEventListeners } from '../modules/events.js';
-import { setupCursorTrail } from '../components/cursor.js';
+import { initEventListeners } from '../modules/events.js';
 import { loadTasksFromStorage } from '../utils/storage.js';
 import { updateTasksList } from '../modules/tasks.js';
-import { updateRangeValues } from '../components/forms.js';
-import { initializeAudio, loadAudioPreferences } from '../modules/audio.js';
-import { initializeAdvancedAnimations } from '../animations/advanced.js';
-import { initializePerformanceOptimizations } from '../utils/performance.js';
-import { createDemoTasks } from '../utils/demo.js';
-import { initializeManagement } from '../modules/management.js';
+import { initAudio, setupAudioEvents } from '../modules/audio.js';
 
 // ===========================================
 // INITIALISATION PRINCIPALE
 // ===========================================
 export function initializeApp() {
-    setupEventListeners();
-    setupCursorTrail();
+    console.log('🚀 Initialisation de Projet Silex...');
+    
+    // Configuration de base
+    console.log('📋 Configuration:', CONFIG);
+    
+    // Initialisation des événements
+    initEventListeners();
+    
+    // Chargement des données
     loadTasksFromStorage();
+    
+    // Mise à jour de l'interface
     updateTasksList();
-    updateRangeValues();
 }
 
 // ===========================================
@@ -33,28 +35,10 @@ export function startApp() {
     initializeApp();
     
     // Initialisation du système audio
-    initializeAudio();
-    
-    // Animations avancées (en arrière-plan)
-    initializeAdvancedAnimations();
-    
-    // Optimisations de performance
-    initializePerformanceOptimizations();
-    
-    // Charger les préférences audio
-    setTimeout(() => {
-        loadAudioPreferences();
-    }, 500);
-    
-    // Créer des tâches de démonstration si nécessaire
-    setTimeout(() => {
-        createDemoTasks();
-    }, 1000);
-    
-    // Initialiser le management
-    setTimeout(() => {
-        initializeManagement();
-    }, 1500);
+    if (typeof initAudio === 'function') {
+        initAudio();
+        setupAudioEvents();
+    }
 }
 
 // Démarrer l'application une fois le DOM chargé

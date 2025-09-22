@@ -24,10 +24,18 @@ export function initEventListeners() {
 // ÉVÉNEMENTS DES TÂCHES
 // ===========================================
 function initTaskEvents() {
+    console.log('🐛 DEBUG: initTaskEvents called');
+    
     // Soumission du formulaire de tâche
     const taskForm = document.getElementById('task-form');
+    console.log('🐛 DEBUG: Task form element:', taskForm);
+    
     if (taskForm) {
+        console.log('🐛 DEBUG: Adding submit event listener to form');
         taskForm.addEventListener('submit', handleTaskSubmit);
+        console.log('🐛 DEBUG: Submit event listener added successfully');
+    } else {
+        console.error('❌ ERROR: Task form not found!');
     }
     
     // Boutons d'action des tâches (délégation d'événements)

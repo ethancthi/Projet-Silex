@@ -33,6 +33,117 @@
     transition: var(--transition-normal);
 }
 
+/* Spécifique au sélecteur de date */
+.form-input[type="date"] {
+    position: relative;
+    color: var(--blanc-os);
+    background: var(--noir-fade);
+}
+
+/* Calendrier à droite pour les inputs de type date */
+.form-input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: var(--blanc-os);
+    cursor: pointer;
+    height: auto;
+    left: auto;
+    position: absolute;
+    right: 8px;
+    top: 0;
+    width: 20px;
+    filter: invert(1) brightness(2) contrast(2);
+    transition: filter 0.3s ease;
+}
+
+.form-input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    filter: invert(1) brightness(1.5) sepia(1) hue-rotate(340deg) saturate(3) contrast(2);
+}
+
+/* Solution alternative avec icône personnalisée */
+.form-input[type="date"] {
+    position: relative;
+    color: var(--blanc-os);
+    background: var(--noir-fade);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3e%3cpath d='M8 2v3M16 2v3M3.5 9.09h17M21 8.5V17c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V8.5c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z' stroke='%23f8f8ff' stroke-width='1.5' stroke-miterlimit='10' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 20px 20px;
+}
+
+/* Masquer l'icône native si on utilise la personnalisée */
+.form-input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+/* Style pour les options des select (menu déroulant) */
+.form-select {
+    background: var(--noir-fade);
+    color: var(--blanc-os);
+    cursor: pointer;
+}
+
+.form-select option {
+    background: var(--noir-profond);
+    color: var(--blanc-os);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+}
+
+.form-select option:hover {
+    background: var(--gris-cendre);
+    color: var(--blanc-os);
+}
+
+.form-select option:checked,
+.form-select option:focus {
+    background: var(--rouge-sang);
+    color: var(--blanc-os);
+}
+
+/* Support Firefox pour les sélecteurs de date */
+.form-input[type="date"]::-moz-placeholder {
+    color: var(--gris-clair);
+}
+
+/* Améliorer l'apparence générale des input date */
+.form-input[type="date"]::-webkit-datetime-edit {
+    color: var(--blanc-os);
+}
+
+.form-input[type="date"]::-webkit-datetime-edit-text {
+    color: var(--gris-clair);
+    padding: 0 4px;
+}
+
+.form-input[type="date"]::-webkit-datetime-edit-month-field,
+.form-input[type="date"]::-webkit-datetime-edit-day-field,
+.form-input[type="date"]::-webkit-datetime-edit-year-field {
+    color: var(--blanc-os);
+    background: transparent;
+}
+
+/* Styles pour les select avec fond sombre amélioré */
+.form-select::-ms-expand {
+    display: none;
+}
+
+.form-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23f8f8ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+    background-size: 16px 12px;
+    padding-right: 36px;
+}
+
 .form-input:focus, .form-select:focus, .form-textarea:focus {
     outline: none;
     border-color: var(--rouge-sang);

@@ -26,29 +26,44 @@ export const CONFIG = {
     },
     
     // Audio
-    AUDIO_FREQUENCIES: {
-        click: 120,
-        hover: 200,
-        complete: [130.81, 164.81, 196.00], // C3, E3, G3
-        error: 150,
-        heartbeat: [60, 80],
-        breathing: 40
-    },
-    
-    // Volumes
-    AUDIO_VOLUMES: {
-        click: 0.1,
-        hover: 0.03,
-        complete: 0.08,
-        error: 0.1,
-        heartbeat: 0.15,
-        breathing: 0.05,
-        ambient: 0.02
+    AUDIO: {
+        FREQUENCIES: {
+            click: 120,
+            hover: 200,
+            complete: [130.81, 164.81, 196.00], // C3, E3, G3
+            error: 150,
+            heartbeat: [60, 80],
+            breathing: 40
+        },
+        
+        VOLUMES: {
+            click: 0.1,
+            hover: 0.03,
+            complete: 0.08,
+            error: 0.1,
+            heartbeat: 0.15,
+            breathing: 0.05,
+            ambient: 0.02
+        },
+        
+        PATHS: {
+            ambientSoundPath: './assets/sound/ambient.mp3',
+            clickSoundPath: './assets/sound/click.mp3',
+            notificationSoundPath: './assets/sound/notification.mp3'
+        }
     },
     
     // Performance
-    MAX_PARTICLES: 100,
-    PARTICLE_CLEANUP_INTERVAL: 10000,
+    PERFORMANCE: {
+        enableAnimations: true,
+        enableCursorEffects: true,
+        enableParticles: true,
+        particleCount: 20,
+        MAX_PARTICLES: 100,
+        PARTICLE_CLEANUP_INTERVAL: 10000
+    },
+    
+    // Timing
     AMBIENT_SOUND_INTERVAL: [8000, 12000] // Min, Max milliseconds
 };
 

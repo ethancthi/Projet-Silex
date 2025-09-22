@@ -15,16 +15,23 @@
     margin-bottom: var(--spacing-2xl);
 }
 
-.stats-card, .domain-filter-card, .assignment-card {
+.stats-card, .domain-filter-card, .assignment-card, .priority-card {
     background: var(--background-card);
     border: 1px solid var(--border-secondary);
     border-radius: var(--radius-xl);
     padding: var(--spacing-xl);
     position: relative;
     backdrop-filter: blur(10px);
+    transition: all var(--transition-normal);
 }
 
-.stats-card::before, .domain-filter-card::before, .assignment-card::before {
+.stats-card:hover, .domain-filter-card:hover, .assignment-card:hover, .priority-card:hover {
+    border-color: var(--rouge-sang-sombre);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(163, 22, 33, 0.15);
+}
+
+.stats-card::before, .domain-filter-card::before, .assignment-card::before, .priority-card::before {
     content: '';
     position: absolute;
     top: 0;
@@ -35,13 +42,16 @@
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
-.stats-card h3, .domain-filter-card h3, .assignment-card h3 {
+.stats-card h3, .domain-filter-card h3, .assignment-card h3, .priority-card h3,
+.stats-card h4, .domain-filter-card h4, .assignment-card h4, .priority-card h4 {
     color: var(--blanc-os);
     font-family: var(--font-title);
     font-size: var(--text-xl);
     font-weight: 500;
     margin-bottom: var(--spacing-lg);
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 /* Statistiques */
@@ -110,12 +120,29 @@
 }
 
 .assignment-content .form-select {
-    background: var(--background-secondary);
+    background: var(--noir-profond);
     border: 1px solid var(--border-secondary);
     color: var(--blanc-os);
     padding: var(--spacing-md);
     border-radius: var(--radius-sm);
     font-size: var(--text-sm);
+}
+
+/* Styles spécifiques pour les options des select d'assignation */
+.assignment-content .form-select option {
+    background: var(--noir-profond);
+    color: var(--blanc-os);
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.assignment-content .form-select option:hover {
+    background: var(--gris-cendre);
+    color: var(--blanc-os);
+}
+
+.assignment-content .form-select option:checked {
+    background: var(--rouge-sang);
+    color: var(--blanc-os);
 }
 
 .assignment-content .submit-button {

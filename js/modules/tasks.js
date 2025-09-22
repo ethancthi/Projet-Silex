@@ -11,56 +11,98 @@ import { formatDate, calculateDaysRemaining, getStatusText, getDomainText } from
 // CRÉATION ET GESTION DES TÂCHES
 // ===========================================
 export function handleTaskSubmit(e) {
+    console.log('🐛 DEBUG: handleTaskSubmit called');
     e.preventDefault();
     
-    const formData = new FormData(e.target);
-    const task = createTaskFromForm(formData);
-    
-    addTask(task);
-    e.target.reset();
-    updateRangeValues();
-    updateTasksList();
-    
-    // Afficher un feedback visuel
-    showNotification('Tâche créée avec succès !', 'success');
+    try {
+        console.log('🐛 DEBUG: Form data collection starting...');
+        const formData = new FormData(e.target);
+        console.log('🐛 DEBUG: FormData created:', formData);
+        
+        console.log('🐛 DEBUG: Creating task from form...');
+        const task = createTaskFromForm(formData);
+        console.log('🐛 DEBUG: Task created:', task);
+        
+        console.log('🐛 DEBUG: Adding task...');
+        addTask(task);
+        console.log('🐛 DEBUG: Task added successfully');
+        
+        console.log('🐛 DEBUG: Resetting form...');
+        e.target.reset();
+        
+        console.log('🐛 DEBUG: Updating UI...');
+        updateRangeValues();
+        updateTasksList();
+        
+        // Afficher un feedback visuel
+        console.log('🐛 DEBUG: Showing notification...');
+        showNotification('Tâche créée avec succès !', 'success');
+        console.log('🐛 DEBUG: Task creation completed successfully');
+    } catch (error) {
+        console.error('❌ ERROR in handleTaskSubmit:', error);
+        console.error('❌ ERROR stack:', error.stack);
+        showNotification('Erreur lors de la création de la tâche: ' + error.message, 'error');
+    }
 }
 
 export function createTaskFromForm(formData) {
-    const deadline = new Date(document.getElementById('task-deadline').value);
+    console.log('🐛 DEBUG: createTaskFromForm started');
     
-    // Récupérer les sous-tâches
-    const subtasks = [];
-    const subtaskElements = document.querySelectorAll('.subtask-item');
-    subtaskElements.forEach((element, index) => {
-        const text = element.querySelector('.subtask-text').textContent;
-        const checked = element.querySelector('.subtask-checkbox').checked;
-        const level = parseInt(element.dataset.level) || 0;
+    try {
+        console.log('🐛 DEBUG: Getting deadline value...');
+        const deadlineInput = document.getElementById('task-deadline');
+        if (!deadlineInput) throw new Error('task-deadline input not found');
+        const deadline = new Date(deadlineInput.value);
+        console.log('🐛 DEBUG: Deadline:', deadline);
         
-        subtasks.push({
-            id: Date.now() + index,
-            text: text,
-            completed: checked,
-            level: level,
-            createdAt: new Date()
+        // Récupérer les sous-tâches
+        console.log('🐛 DEBUG: Getting subtasks...');
+        const subtasks = [];
+        const subtaskElements = document.querySelectorAll('.subtask-item');
+        console.log('🐛 DEBUG: Found subtask elements:', subtaskElements.length);
+        
+        subtaskElements.forEach((element, index) => {
+            const text = element.querySelector('.subtask-text').textContent;
+            const checked = element.querySelector('.subtask-checkbox').checked;
+            const level = parseInt(element.dataset.level) || 0;
+            
+            subtasks.push({
+                id: Date.now() + index,
+                text: text,
+                completed: checked,
+                level: level,
+                createdAt: new Date()
+            });
         });
-    });
-    
-    return {
-        id: incrementTaskIdCounter(),
-        title: document.getElementById('task-title').value,
-        deadline: deadline,
-        status: document.getElementById('task-status').value,
-        domain: document.getElementById('task-domain').value,
-        condition: document.getElementById('task-condition').value,
-        duration: document.getElementById('task-duration').value,
-        difficulty: parseInt(document.getElementById('task-difficulty').value),
-        priority: parseInt(document.getElementById('task-priority').value),
-        assignee: document.getElementById('task-assignee').value || 'Non assigné',
-        createdAt: new Date(),
-        progress: calculateProgressFromSubtasks(subtasks),
-        steps: [],
-        subtasks: subtasks
-    };
+        
+        console.log('🐛 DEBUG: Collecting form values...');
+        const titleElement = document.getElementById('task-title');
+        if (!titleElement) throw new Error('task-title input not found');
+        
+        const task = {
+            id: incrementTaskIdCounter(),
+            title: titleElement.value,
+            deadline: deadline,
+            status: document.getElementById('task-status').value,
+            domain: document.getElementById('task-domain').value,
+            condition: document.getElementById('task-condition').value,
+            duration: document.getElementById('task-duration').value,
+            difficulty: parseInt(document.getElementById('task-difficulty').value),
+            priority: parseInt(document.getElementById('task-priority').value),
+            assignee: document.getElementById('task-assignee').value || 'Non assigné',
+            createdAt: new Date(),
+            progress: calculateProgressFromSubtasks(subtasks),
+            steps: [],
+            subtasks: subtasks
+        };
+        
+        console.log('🐛 DEBUG: Task object created successfully:', task);
+        return task;
+        
+    } catch (error) {
+        console.error('❌ ERROR in createTaskFromForm:', error);
+        throw error;
+    }
 }
 
 export function calculateProgressFromSubtasks(subtasks) {
@@ -73,8 +115,16 @@ export function calculateProgressFromSubtasks(subtasks) {
 }
 
 export function addTask(task) {
+    console.log('🐛 DEBUG: addTask called with:', task);
+    console.log('🐛 DEBUG: Current tasks array length:', tasks.length);
+    
     tasks.push(task);
+    console.log('🐛 DEBUG: Task added. New tasks array length:', tasks.length);
+    console.log('🐛 DEBUG: Updated tasks array:', tasks);
+    
+    console.log('🐛 DEBUG: Saving to storage...');
     saveTasksToStorage();
+    console.log('🐛 DEBUG: Saved to storage successfully');
 }
 
 export function deleteTask(taskId) {

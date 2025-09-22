@@ -2,7 +2,7 @@
 // SYSTÈME AUDIO
 // ===========================================
 
-import { audioConfig } from '../core/config.js';
+import { CONFIG } from '../core/config.js';
 
 let ambientAudio = null;
 let clickAudio = null;
@@ -13,13 +13,13 @@ let clickAudio = null;
 export function initAudio() {
     try {
         // Chargement de l'audio d'ambiance
-        ambientAudio = new Audio(audioConfig.ambientSoundPath);
+        ambientAudio = new Audio(CONFIG.AUDIO.PATHS.ambientSoundPath);
         ambientAudio.loop = true;
-        ambientAudio.volume = audioConfig.ambientVolume;
+        ambientAudio.volume = CONFIG.AUDIO.VOLUMES.ambient;
         
         // Chargement du son de clic
-        clickAudio = new Audio(audioConfig.clickSoundPath);
-        clickAudio.volume = audioConfig.clickVolume;
+        clickAudio = new Audio(CONFIG.AUDIO.PATHS.clickSoundPath);
+        clickAudio.volume = CONFIG.AUDIO.VOLUMES.click;
         
         // Événements pour l'audio d'ambiance
         ambientAudio.addEventListener('canplaythrough', () => {
@@ -35,10 +35,8 @@ export function initAudio() {
             console.warn('Erreur lors du chargement du son de clic:', e);
         });
         
-        // Auto-play de l'ambiance (si autorisé par le navigateur)
-        if (audioConfig.autoPlayAmbient) {
-            playAmbientSound();
-        }
+        // Auto-play de l'ambiance (navigateur permitting)
+        console.log('Audio initialisé avec succès');
         
     } catch (error) {
         console.warn('Erreur lors de l\'initialisation audio:', error);
