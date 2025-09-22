@@ -3,30 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Cahier des charges - Projet Silex - Spécifications et exigences du gestionnaire de tâches horror interface">
+    <meta name="description" content="Cahier des charges - Projet Silex - Gestion des caractéristiques">
     <meta name="keywords" content="cahier des charges, spécifications, exigences, projet silex, horror interface">
-    <meta name="robots" content="index, follow">
     
     <!-- Performance optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="./css/style.css" as="style">
     <link rel="preload" href="./js/bundled-tasks.js" as="script">
-    <link rel="preload" href="./assets/images/logo.svg" as="image">
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="./manifest.json">
     
-    <!-- Icônes pour différentes plateformes -->
+    <!-- Icônes -->
     <link rel="icon" type="image/svg+xml" href="./assets/images/logo.svg">
-    <link rel="apple-touch-icon" href="./assets/images/icon-192x192.svg">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    
-    <!-- Couleur de thème pour les navigateurs mobiles -->
     <meta name="theme-color" content="#1a1a1a">
-    <meta name="msapplication-navbutton-color" content="#1a1a1a">
     
     <title>Projet Silex - Cahier des Charges</title>
     <link rel="stylesheet" href="./css/style.css">
@@ -65,364 +56,144 @@
                 <div class="dashboard-grid">
                     <!-- Objectifs -->
                     <div class="stats-card breathing">
-                        <h4>Objectifs Principaux</h4>
+                        <h4>🎯 Objectifs Principaux</h4>
                         <div class="stats-content">
-                            <div class="spec-item">
-                                <span class="spec-icon">🎯</span>
-                                <span class="spec-text">Interface Horror Professionnelle</span>
-                            </div>
-                            <div class="spec-item">
-                                <span class="spec-icon">📋</span>
-                                <span class="spec-text">Gestion Complète des Tâches</span>
-                            </div>
-                            <div class="spec-item">
-                                <span class="spec-icon">📊</span>
-                                <span class="spec-text">Analytics en Temps Réel</span>
-                            </div>
-                            <div class="spec-item">
-                                <span class="spec-icon">🏗️</span>
-                                <span class="spec-text">Architecture Modulaire</span>
-                            </div>
+                            <ul>
+                                <li>Gestionnaire de tâches avec interface horror</li>
+                                <li>Architecture modulaire et performante</li>
+                                <li>Expérience utilisateur immersive</li>
+                                <li>Compatibilité multi-plateforme</li>
+                            </ul>
                         </div>
                     </div>
 
                     <!-- Technologies -->
-                    <div class="priority-card breathing">
-                        <h4>Stack Technique</h4>
-                        <div class="tech-stack">
-                            <div class="tech-category">
-                                <h5>Frontend</h5>
-                                <ul>
-                                    <li>HTML5 Sémantique</li>
-                                    <li>CSS3 Modulaire</li>
-                                    <li>JavaScript ES6+</li>
-                                    <li>PWA Ready</li>
-                                </ul>
-                            </div>
-                            <div class="tech-category">
-                                <h5>Architecture</h5>
-                                <ul>
-                                    <li>Modules ES6</li>
-                                    <li>LocalStorage</li>
-                                    <li>Service Worker</li>
-                                    <li>Responsive Design</li>
-                                </ul>
-                            </div>
+                    <div class="stats-card breathing">
+                        <h4>🛠️ Stack Technique</h4>
+                        <div class="stats-content">
+                            <ul>
+                                <li><strong>Frontend:</strong> HTML5, CSS3, JavaScript ES6+</li>
+                                <li><strong>Design:</strong> Système de design horror custom</li>
+                                <li><strong>Stockage:</strong> LocalStorage</li>
+                                <li><strong>PWA:</strong> Service Worker, Manifest</li>
+                            </ul>
                         </div>
                     </div>
 
-                    <!-- Compatibilité -->
-                    <div class="assignment-card breathing">
-                        <h4>Compatibilité</h4>
-                        <div class="compatibility-list">
-                            <div class="compat-item">
-                                <span class="compat-status compat-success">✅</span>
-                                <span>File:// Protocol</span>
+                    <!-- Statistiques -->
+                    <div class="stats-card breathing">
+                        <h4>📊 Métriques Projet</h4>
+                        <div class="stats-content stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-number" id="total-specs-overview">0</span>
+                                <span class="stat-label">Caractéristiques</span>
                             </div>
-                            <div class="compat-item">
-                                <span class="compat-status compat-success">✅</span>
-                                <span>Live Server</span>
-                            </div>
-                            <div class="compat-item">
-                                <span class="compat-status compat-success">✅</span>
-                                <span>GitHub Pages</span>
-                            </div>
-                            <div class="compat-item">
-                                <span class="compat-status compat-success">✅</span>
-                                <span>Netlify/Vercel</span>
+                            <div class="stat-item">
+                                <span class="stat-number" id="completed-specs-overview">0</span>
+                                <span class="stat-label">Terminées</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Spécifications fonctionnelles -->
+            <!-- Gestion des caractéristiques -->
             <div class="tasks-list-container">
-                <h3>Spécifications Fonctionnelles</h3>
+                <!-- Formulaire d'ajout/modification -->
+                <div class="task-form-container" style="margin-bottom: 2rem;">
+                    <h4>🔧 Gestion des Caractéristiques</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="spec-title">Titre</label>
+                            <input type="text" id="spec-title" class="form-input" placeholder="Nom de la caractéristique...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="spec-domain">Domaine</label>
+                            <select id="spec-domain" class="form-select">
+                                <option value="site-dev">💻 Développement du site</option>
+                                <option value="game-dev">🎮 Développement du jeu</option>
+                                <option value="graphics-2d">🎨 Graphismes 2D</option>
+                                <option value="graphics-3d">🗿 Graphismes 3D</option>
+                                <option value="sound-design">🔊 Sound Design</option>
+                                <option value="music">🎵 Musiques</option>
+                                <option value="level-design">🗺️ Level Design</option>
+                                <option value="animations">🎬 Animations</option>
+                                <option value="community">👥 Community Management</option>
+                                <option value="scenario">📝 Scénario</option>
+                                <option value="testing">🧪 Tests</option>
+                                <option value="qa-management">🔍 QA Management</option>
+                                <option value="hr-management">👔 RH/Management</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="spec-priority">Priorité</label>
+                            <input type="range" id="spec-priority" class="form-range" min="1" max="100" value="50">
+                            <span class="range-value">50</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="spec-status">Statut</label>
+                            <select id="spec-status" class="form-select">
+                                <option value="not-started">Non commencé</option>
+                                <option value="in-progress">En cours</option>
+                                <option value="standby">Stand by</option>
+                                <option value="completed">Terminé</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="spec-description">Description</label>
+                        <textarea id="spec-description" class="form-textarea" placeholder="Description détaillée de la caractéristique..." rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button id="spec-submit-btn" class="btn btn-primary breathing">Ajouter</button>
+                        <button type="button" class="btn btn-secondary breathing" onclick="clearSpecificationForm()">Annuler</button>
+                    </div>
+                </div>
+
+                <h3>📋 Caractéristiques du Projet</h3>
                 <div class="tasks-filter">
                     <button class="filter-btn active" data-filter="all">Toutes</button>
-                    <button class="filter-btn" data-filter="ui">Interface</button>
-                    <button class="filter-btn" data-filter="features">Fonctionnalités</button>
-                    <button class="filter-btn" data-filter="performance">Performance</button>
-                    <button class="filter-btn" data-filter="architecture">Architecture</button>
+                    <button class="filter-btn" data-filter="site-dev">💻 Développement du site</button>
+                    <button class="filter-btn" data-filter="game-dev">🎮 Développement du jeu</button>
+                    <button class="filter-btn" data-filter="graphics-2d">🎨 Graphismes 2D</button>
+                    <button class="filter-btn" data-filter="graphics-3d">🗿 Graphismes 3D</button>
+                    <button class="filter-btn" data-filter="sound-design">🔊 Sound Design</button>
+                    <button class="filter-btn" data-filter="music">🎵 Musiques</button>
+                    <button class="filter-btn" data-filter="level-design">🗺️ Level Design</button>
+                    <button class="filter-btn" data-filter="animations">🎬 Animations</button>
+                    <button class="filter-btn" data-filter="community">👥 Community Management</button>
+                    <button class="filter-btn" data-filter="scenario">📝 Scénario</button>
+                    <button class="filter-btn" data-filter="testing">🧪 Tests</button>
+                    <button class="filter-btn" data-filter="qa-management">🔍 QA Management</button>
+                    <button class="filter-btn" data-filter="hr-management">👔 RH/Management</button>
                 </div>
                 <div id="specifications-list" class="tasks-list">
-                    <!-- Spécification Interface -->
-                    <div class="task-card breathing" data-category="ui" data-spec-id="interface-horror">
-                        <div class="task-header">
-                            <h4 class="task-title">🎨 Interface Horror Organique</h4>
-                            <span class="task-status status-completed">Implémenté</span>
-                        </div>
-                        <div class="task-content">
-                            <p><strong>Domaine:</strong> UI/UX Design</p>
-                            <p><strong>Priorité:</strong> Critique (95/100)</p>
-                            <p><strong>Description:</strong> Interface sombre avec palette horror professionnelle</p>
-                            <div class="spec-details">
-                                <h5>Exigences:</h5>
-                                <ul>
-                                    <li>Palette couleurs organiques (noir, rouge sang, gris cendre)</li>
-                                    <li>Animations breathing subtiles</li>
-                                    <li>Effets visuels immersifs</li>
-                                    <li>Typography professionnelle (Cinzel, Inter)</li>
-                                </ul>
-                            </div>
-                            <!-- Section des tâches assignées -->
-                            <div class="spec-tasks-section">
-                                <h5>Tâches Assignées</h5>
-                                <div class="assigned-tasks-list" id="tasks-interface-horror">
-                                    <!-- Les tâches assignées seront affichées ici -->
-                                </div>
-                                <div class="assign-task-container">
-                                    <select class="task-assign-select" data-spec-id="interface-horror">
-                                        <option value="">Assigner une tâche existante...</option>
-                                    </select>
-                                    <button class="assign-btn breathing" data-spec-id="interface-horror">Assigner</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Spécification Gestion des Tâches -->
-                    <div class="task-card breathing" data-category="features" data-spec-id="gestion-taches">
-                        <div class="task-header">
-                            <h4 class="task-title">📋 Système de Gestion des Tâches</h4>
-                            <span class="task-status status-completed">Implémenté</span>
-                        </div>
-                        <div class="task-content">
-                            <p><strong>Domaine:</strong> Logique Métier</p>
-                            <p><strong>Priorité:</strong> Critique (98/100)</p>
-                            <p><strong>Description:</strong> CRUD complet avec sous-tâches hiérarchiques</p>
-                            <div class="spec-details">
-                                <h5>Fonctionnalités:</h5>
-                                <ul>
-                                    <li>Création, modification, suppression de tâches</li>
-                                    <li>Sous-tâches multi-niveaux</li>
-                                    <li>Champs avancés (priorité, difficulté, deadline)</li>
-                                    <li>Assignation et filtrage</li>
-                                    <li>Persistance LocalStorage</li>
-                                </ul>
-                            </div>
-                            <!-- Section des tâches assignées -->
-                            <div class="spec-tasks-section">
-                                <h5>Tâches Assignées</h5>
-                                <div class="assigned-tasks-list" id="tasks-gestion-taches">
-                                    <!-- Les tâches assignées seront affichées ici -->
-                                </div>
-                                <div class="assign-task-container">
-                                    <select class="task-assign-select" data-spec-id="gestion-taches">
-                                        <option value="">Assigner une tâche existante...</option>
-                                    </select>
-                                    <button class="assign-btn breathing" data-spec-id="gestion-taches">Assigner</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Spécification Tableau de Bord -->
-                    <div class="task-card breathing" data-category="features" data-spec-id="dashboard-analytics">
-                        <div class="task-header">
-                            <h4 class="task-title">📊 Tableau de Bord Analytics</h4>
-                            <span class="task-status status-completed">Implémenté</span>
-                        </div>
-                        <div class="task-content">
-                            <p><strong>Domaine:</strong> Analytics</p>
-                            <p><strong>Priorité:</strong> Élevée (85/100)</p>
-                            <p><strong>Description:</strong> Statistiques en temps réel et visualisations</p>
-                            <div class="spec-details">
-                                <h5>Métriques:</h5>
-                                <ul>
-                                    <li>Statistiques globales (total, terminées, en cours)</li>
-                                    <li>Tâches prioritaires et en retard</li>
-                                    <li>Progression mensuelle</li>
-                                    <li>Assignation rapide</li>
-                                </ul>
-                            </div>
-                            <!-- Section des tâches assignées -->
-                            <div class="spec-tasks-section">
-                                <h5>Tâches Assignées</h5>
-                                <div class="assigned-tasks-list" id="tasks-dashboard-analytics">
-                                    <!-- Les tâches assignées seront affichées ici -->
-                                </div>
-                                <div class="assign-task-container">
-                                    <select class="task-assign-select" data-spec-id="dashboard-analytics">
-                                        <option value="">Assigner une tâche existante...</option>
-                                    </select>
-                                    <button class="assign-btn breathing" data-spec-id="dashboard-analytics">Assigner</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Spécification Performance -->
-                    <div class="task-card breathing" data-category="performance" data-spec-id="performance-optim">
-                        <div class="task-header">
-                            <h4 class="task-title">⚡ Optimisations Performance</h4>
-                            <span class="task-status status-completed">Implémenté</span>
-                        </div>
-                        <div class="task-content">
-                            <p><strong>Domaine:</strong> Performance</p>
-                            <p><strong>Priorité:</strong> Élevée (80/100)</p>
-                            <p><strong>Description:</strong> Application optimisée pour les performances</p>
-                            <div class="spec-details">
-                                <h5>Optimisations:</h5>
-                                <ul>
-                                    <li>Preload des ressources critiques</li>
-                                    <li>Service Worker avec cache stratégique</li>
-                                    <li>GPU acceleration pour animations</li>
-                                    <li>Lazy loading des images</li>
-                                    <li>Respect des préférences d'accessibilité</li>
-                                </ul>
-                            </div>
-                            <!-- Section des tâches assignées -->
-                            <div class="spec-tasks-section">
-                                <h5>Tâches Assignées</h5>
-                                <div class="assigned-tasks-list" id="tasks-performance-optim">
-                                    <!-- Les tâches assignées seront affichées ici -->
-                                </div>
-                                <div class="assign-task-container">
-                                    <select class="task-assign-select" data-spec-id="performance-optim">
-                                        <option value="">Assigner une tâche existante...</option>
-                                    </select>
-                                    <button class="assign-btn breathing" data-spec-id="performance-optim">Assigner</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Spécification Architecture -->
-                    <div class="task-card breathing" data-category="architecture" data-spec-id="architecture-modulaire">
-                        <div class="task-header">
-                            <h4 class="task-title">🏗️ Architecture Modulaire</h4>
-                            <span class="task-status status-completed">Implémenté</span>
-                        </div>
-                        <div class="task-content">
-                            <p><strong>Domaine:</strong> Architecture</p>
-                            <p><strong>Priorité:</strong> Critique (90/100)</p>
-                            <p><strong>Description:</strong> Code organisé en modules réutilisables</p>
-                            <div class="spec-details">
-                                <h5>Structure:</h5>
-                                <ul>
-                                    <li>JavaScript modulaire (9 modules, 5 dossiers)</li>
-                                    <li>CSS modulaire (8 dossiers spécialisés)</li>
-                                    <li>Séparation des responsabilités</li>
-                                    <li>Version bundlée pour compatibilité</li>
-                                </ul>
-                            </div>
-                            <!-- Section des tâches assignées -->
-                            <div class="spec-tasks-section">
-                                <h5>Tâches Assignées</h5>
-                                <div class="assigned-tasks-list" id="tasks-architecture-modulaire">
-                                    <!-- Les tâches assignées seront affichées ici -->
-                                </div>
-                                <div class="assign-task-container">
-                                    <select class="task-assign-select" data-spec-id="architecture-modulaire">
-                                        <option value="">Assigner une tâche existante...</option>
-                                    </select>
-                                    <button class="assign-btn breathing" data-spec-id="architecture-modulaire">Assigner</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Les caractéristiques seront affichées dynamiquement ici -->
                 </div>
             </div>
-            
-            <!-- Exigences techniques -->
-            <div class="task-form-container">
-                <h3>Exigences Techniques Détaillées</h3>
-                <div class="requirements-grid">
-                    <div class="requirement-section">
-                        <h4>🎨 Design System</h4>
-                        <div class="requirement-content">
-                            <h5>Palette Couleurs</h5>
-                            <div class="color-palette">
-                                <div class="color-item">
-                                    <div class="color-sample" style="background: #0a0a0a;"></div>
-                                    <span>Noir Profond (#0a0a0a)</span>
-                                </div>
-                                <div class="color-item">
-                                    <div class="color-sample" style="background: #a31621;"></div>
-                                    <span>Rouge Sang (#a31621)</span>
-                                </div>
-                                <div class="color-item">
-                                    <div class="color-sample" style="background: #2f2f2f;"></div>
-                                    <span>Gris Cendre (#2f2f2f)</span>
-                                </div>
-                                <div class="color-item">
-                                    <div class="color-sample" style="background: #f8f8ff;"></div>
-                                    <span>Blanc Os (#f8f8ff)</span>
-                                </div>
-                            </div>
-                            
-                            <h5>Typography</h5>
-                            <ul>
-                                <li><strong>Titres:</strong> Cinzel (serif, élégant)</li>
-                                <li><strong>Corps:</strong> Inter (sans-serif, lisible)</li>
-                                <li><strong>Code:</strong> Source Code Pro (monospace)</li>
-                                <li><strong>Horror:</strong> Creepster (effet spécial)</li>
-                            </ul>
-                        </div>
-                    </div>
+        </div>
 
-                    <div class="requirement-section">
-                        <h4>⚡ Performance</h4>
-                        <div class="requirement-content">
-                            <h5>Métriques Cibles</h5>
-                            <ul>
-                                <li><strong>First Contentful Paint:</strong> &lt; 1.5s</li>
-                                <li><strong>Largest Contentful Paint:</strong> &lt; 2.5s</li>
-                                <li><strong>Cumulative Layout Shift:</strong> &lt; 0.1</li>
-                                <li><strong>First Input Delay:</strong> &lt; 100ms</li>
-                            </ul>
-                            
-                            <h5>Techniques</h5>
-                            <ul>
-                                <li>Preload des ressources critiques</li>
-                                <li>Service Worker avec stratégie cache-first</li>
-                                <li>GPU acceleration (will-change: transform)</li>
-                                <li>Optimisation des fonts Google</li>
-                            </ul>
-                        </div>
+        <!-- Sidebar avec informations du projet -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3>📊 Statistiques</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-specs">0</span>
+                        <span class="stat-label">Caractéristiques</span>
                     </div>
-
-                    <div class="requirement-section">
-                        <h4>🌐 Compatibilité</h4>
-                        <div class="requirement-content">
-                            <h5>Navigateurs Supportés</h5>
-                            <ul>
-                                <li><strong>Chrome/Chromium:</strong> Version 80+</li>
-                                <li><strong>Firefox:</strong> Version 75+</li>
-                                <li><strong>Safari:</strong> Version 13+</li>
-                                <li><strong>Edge:</strong> Version 80+</li>
-                            </ul>
-                            
-                            <h5>Environnements</h5>
-                            <ul>
-                                <li>Ouverture directe (file://)</li>
-                                <li>Serveur de développement local</li>
-                                <li>GitHub Pages</li>
-                                <li>Netlify/Vercel</li>
-                            </ul>
-                        </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="completed-specs">0</span>
+                        <span class="stat-label">Terminées</span>
                     </div>
-
-                    <div class="requirement-section">
-                        <h4>📱 Responsive</h4>
-                        <div class="requirement-content">
-                            <h5>Breakpoints</h5>
-                            <ul>
-                                <li><strong>Desktop:</strong> 1024px+</li>
-                                <li><strong>Tablette:</strong> 768px - 1023px</li>
-                                <li><strong>Mobile:</strong> 320px - 767px</li>
-                            </ul>
-                            
-                            <h5>Adaptations</h5>
-                            <ul>
-                                <li>Navigation collapsible sur mobile</li>
-                                <li>Grilles adaptatives</li>
-                                <li>Touch-friendly interfaces</li>
-                                <li>Optimisation des performances mobile</li>
-                            </ul>
-                        </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="assigned-tasks">0</span>
+                        <span class="stat-label">Tâches Assignées</span>
                     </div>
                 </div>
             </div>
@@ -432,15 +203,26 @@
     <!-- Debug info -->
     <div style="position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.8); color: #0f0; padding: 10px; font-family: monospace; font-size: 12px; border-radius: 5px; z-index: 9999;">
         <div>📋 Cahier des Charges</div>
-        <div id="debug-status">Spécifications Chargées</div>
+        <div id="debug-status">Caractéristiques Chargées</div>
     </div>
 
     <script src="./js/bundled-tasks.js"></script>
     <script>
-        // Fonctionnalité de filtrage pour les spécifications
+        // Gestion du slider de priorité
+        document.addEventListener('DOMContentLoaded', function() {
+            const prioritySlider = document.getElementById('spec-priority');
+            const rangeValue = document.querySelector('.range-value');
+            
+            if (prioritySlider && rangeValue) {
+                prioritySlider.addEventListener('input', function() {
+                    rangeValue.textContent = this.value;
+                });
+            }
+        });
+
+        // Fonctionnalité de filtrage pour les caractéristiques
         document.addEventListener('DOMContentLoaded', function() {
             const filterButtons = document.querySelectorAll('.filter-btn');
-            const specCards = document.querySelectorAll('#specifications-list .task-card');
             
             filterButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -451,13 +233,10 @@
                     
                     const filter = button.dataset.filter;
                     
-                    specCards.forEach(card => {
-                        if (filter === 'all' || card.dataset.category === filter) {
-                            card.style.display = 'block';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
+                    // Filtrer les caractéristiques via JavaScript
+                    if (window.filterSpecifications) {
+                        window.filterSpecifications(filter);
+                    }
                 });
             });
 
@@ -468,305 +247,5 @@
             }, 100);
         });
     </script>
-
-    <style>
-        /* Styles spécifiques au cahier des charges */
-        .spec-item {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .spec-icon {
-            font-size: var(--text-lg);
-            width: 24px;
-            text-align: center;
-        }
-
-        .spec-text {
-            color: var(--blanc-os);
-            font-size: var(--text-sm);
-        }
-
-        .tech-stack {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-md);
-        }
-
-        .tech-category h5 {
-            color: var(--rouge-sang);
-            font-family: var(--font-title);
-            margin-bottom: var(--spacing-sm);
-            font-size: var(--text-base);
-        }
-
-        .tech-category ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .tech-category li {
-            color: var(--gris-clair);
-            font-size: var(--text-sm);
-            margin-bottom: var(--spacing-xs);
-            padding-left: var(--spacing-md);
-            position: relative;
-        }
-
-        .tech-category li::before {
-            content: "▸";
-            position: absolute;
-            left: 0;
-            color: var(--rouge-sang);
-        }
-
-        .compatibility-list {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-sm);
-        }
-
-        .compat-item {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
-
-        .compat-status {
-            font-weight: bold;
-            width: 20px;
-            text-align: center;
-        }
-
-        .compat-success {
-            color: #2d5016;
-        }
-
-        .spec-details {
-            margin-top: var(--spacing-md);
-            padding-top: var(--spacing-md);
-            border-top: 1px solid var(--border-secondary);
-        }
-
-        .spec-details h5 {
-            color: var(--rouge-sang);
-            font-family: var(--font-title);
-            margin-bottom: var(--spacing-sm);
-            font-size: var(--text-sm);
-        }
-
-        .spec-details ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .spec-details li {
-            color: var(--gris-clair);
-            font-size: var(--text-xs);
-            margin-bottom: var(--spacing-xs);
-            padding-left: var(--spacing-md);
-            position: relative;
-        }
-
-        .spec-details li::before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: var(--rouge-sang);
-        }
-
-        .requirements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--spacing-xl);
-        }
-
-        .requirement-section {
-            background: var(--background-card);
-            border: 1px solid var(--border-secondary);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-lg);
-        }
-
-        .requirement-section h4 {
-            color: var(--blanc-os);
-            font-family: var(--font-title);
-            margin-bottom: var(--spacing-md);
-            font-size: var(--text-lg);
-        }
-
-        .requirement-content h5 {
-            color: var(--rouge-sang);
-            font-family: var(--font-title);
-            margin: var(--spacing-md) 0 var(--spacing-sm) 0;
-            font-size: var(--text-base);
-        }
-
-        .color-palette {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .color-item {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
-
-        .color-sample {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 1px solid var(--border-secondary);
-        }
-
-        .color-item span {
-            color: var(--gris-clair);
-            font-size: var(--text-xs);
-        }
-
-        /* Styles pour les sections de tâches assignées */
-        .spec-tasks-section {
-            margin-top: var(--spacing-lg);
-            padding-top: var(--spacing-md);
-            border-top: 1px solid var(--border-secondary);
-        }
-
-        .spec-tasks-section h5 {
-            color: var(--rouge-sang);
-            font-family: var(--font-title);
-            margin-bottom: var(--spacing-sm);
-            font-size: var(--text-sm);
-        }
-
-        .assigned-tasks-list {
-            min-height: 50px;
-            margin-bottom: var(--spacing-md);
-            padding: var(--spacing-sm);
-            background: var(--background-secondary);
-            border-radius: var(--radius-md);
-            border: 1px dashed var(--border-secondary);
-        }
-
-        .assigned-task-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--background-card);
-            border: 1px solid var(--border-secondary);
-            border-radius: var(--radius-sm);
-            padding: var(--spacing-sm);
-            margin-bottom: var(--spacing-xs);
-            transition: all var(--transition-normal);
-        }
-
-        .assigned-task-item:hover {
-            border-color: var(--rouge-sang);
-            background: rgba(163, 22, 33, 0.1);
-        }
-
-        .assigned-task-title {
-            color: var(--blanc-os);
-            font-size: var(--text-sm);
-            flex: 1;
-        }
-
-        .assigned-task-status {
-            padding: 2px 8px;
-            border-radius: var(--radius-sm);
-            font-size: var(--text-xs);
-            font-weight: 500;
-        }
-
-        .unassign-btn {
-            background: transparent;
-            border: 1px solid var(--rouge-sang);
-            color: var(--rouge-sang);
-            padding: 2px 6px;
-            border-radius: var(--radius-sm);
-            font-size: var(--text-xs);
-            cursor: pointer;
-            margin-left: var(--spacing-sm);
-            transition: all var(--transition-normal);
-        }
-
-        .unassign-btn:hover {
-            background: var(--rouge-sang);
-            color: var(--blanc-os);
-        }
-
-        .assign-task-container {
-            display: flex;
-            gap: var(--spacing-sm);
-            align-items: center;
-        }
-
-        .task-assign-select {
-            flex: 1;
-            background: var(--background-input);
-            border: 1px solid var(--border-primary);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-sm);
-            color: var(--blanc-os);
-            font-size: var(--text-sm);
-        }
-
-        .task-assign-select option {
-            background: var(--noir-profond);
-            color: var(--blanc-os);
-        }
-
-        .assign-btn {
-            background: var(--rouge-sang);
-            border: none;
-            color: var(--blanc-os);
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--radius-md);
-            font-size: var(--text-sm);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-        }
-
-        .assign-btn:hover {
-            background: var(--rouge-clair);
-            transform: translateY(-1px);
-        }
-
-        .assign-btn:disabled {
-            background: var(--gris-sombre);
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .empty-tasks-message {
-            color: var(--gris-clair);
-            font-style: italic;
-            text-align: center;
-            padding: var(--spacing-md);
-            font-size: var(--text-sm);
-        }
-
-        @media (max-width: 768px) {
-            .tech-stack {
-                grid-template-columns: 1fr;
-            }
-            
-            .requirements-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .color-palette {
-                grid-template-columns: 1fr;
-            }
-            
-            .assign-task-container {
-                flex-direction: column;
-            }
-        }
-    </style>
 </body>
 </html>

@@ -256,6 +256,29 @@
 .tasks-list {
     display: grid;
     gap: var(--spacing-lg);
+    max-height: calc(3 * (250px + var(--spacing-lg))); /* Hauteur pour 3 tâches + gaps */
+    overflow-y: auto;
+    padding-right: var(--spacing-sm);
+}
+
+/* Style de la scrollbar pour la liste des tâches */
+.tasks-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tasks-list::-webkit-scrollbar-track {
+    background: var(--background-secondary);
+    border-radius: var(--radius-md);
+}
+
+.tasks-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--rouge-sang) 0%, var(--pourpre-sombre) 100%);
+    border-radius: var(--radius-md);
+    transition: background 0.3s ease;
+}
+
+.tasks-list::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--rouge-sang-clair) 0%, var(--rouge-sang) 100%);
 }
 
 .task-card {

@@ -13,47 +13,42 @@ const CAHIER_DES_CHARGES_SPECS = [
     {
         id: 'interface-horror',
         title: '🎨 Interface Horror Organique',
-        category: 'ui',
+        domain: 'graphics-2d',
         description: 'Interface sombre avec palette horror professionnelle',
         priority: 95,
-        status: 'completed',
-        tachesAssociees: []
+        status: 'completed'
     },
     {
         id: 'gestion-taches',
         title: '📋 Système de Gestion des Tâches',
-        category: 'features',
+        domain: 'site-dev',
         description: 'CRUD complet avec sous-tâches hiérarchiques',
         priority: 98,
-        status: 'completed',
-        tachesAssociees: []
+        status: 'completed'
     },
     {
         id: 'dashboard-analytics',
         title: '📊 Tableau de Bord Analytics',
-        category: 'features',
+        domain: 'site-dev',
         description: 'Statistiques en temps réel et visualisations',
         priority: 85,
-        status: 'completed',
-        tachesAssociees: []
+        status: 'completed'
     },
     {
         id: 'performance-optim',
         title: '⚡ Optimisations Performance',
-        category: 'performance',
+        domain: 'site-dev',
         description: 'Application optimisée pour les performances',
         priority: 80,
-        status: 'completed',
-        tachesAssociees: []
+        status: 'completed'
     },
     {
         id: 'architecture-modulaire',
         title: '🏗️ Architecture Modulaire',
-        category: 'architecture',
+        domain: 'site-dev',
         description: 'Code organisé en modules réutilisables',
         priority: 90,
-        status: 'completed',
-        tachesAssociees: []
+        status: 'completed'
     }
 ];
 
@@ -136,11 +131,19 @@ function getStatusText(status) {
 
 function getDomainText(domain) {
     const domainMap = {
-        'kyf': 'KYF',
-        'development': 'Développement',
-        'design': 'Design',
-        'marketing': 'Marketing',
-        'research': 'Recherche'
+        'site-dev': '💻 Développement du site',
+        'game-dev': '🎮 Développement du jeu',
+        'graphics-2d': '🎨 Graphismes 2D',
+        'graphics-3d': '🗿 Graphismes 3D',
+        'sound-design': '🔊 Sound Design',
+        'music': '🎵 Musiques',
+        'level-design': '🗺️ Level Design',
+        'animations': '🎬 Animations',
+        'community': '👥 Community Management',
+        'scenario': '📝 Scénario',
+        'testing': '🧪 Tests',
+        'qa-management': '🔍 QA Management',
+        'hr-management': '👔 RH/Management'
     };
     return domainMap[domain] || domain;
 }
@@ -366,7 +369,7 @@ function updatePriorityTasks() {
 
 // Fonction pour faire défiler jusqu'à une tâche spécifique dans la liste
 function scrollToTask(taskId) {
-    console.log('🎯 Scrolling to task:', taskId);
+    console.log('🎯 Scrolling to task and opening details:', taskId);
     
     // Attendre un petit moment pour que l'affichage soit prêt
     setTimeout(() => {
@@ -389,6 +392,12 @@ function scrollToTask(taskId) {
                 taskElement.style.borderColor = '';
                 taskElement.style.transform = '';
             }, 2000);
+            
+            // Ouvrir automatiquement les détails de la tâche après le scroll
+            setTimeout(() => {
+                showTaskDetails(taskId);
+                console.log('✅ Opened task details for task:', taskId);
+            }, 500); // Délai pour que le scroll soit fini
             
             console.log('✅ Scrolled to task successfully');
         } else {
@@ -467,6 +476,13 @@ function assignTaskToSpecification(taskId, specId) {
     saveSpecificationsToStorage();
     
     console.log('✅ Task assigned to specification:', { taskId, specId });
+    
+    // Mettre à jour l'affichage si nous sommes sur la page cahier des charges
+    if (document.getElementById('specifications-list')) {
+        updateSpecificationsList();
+        updateSpecificationStats();
+    }
+    
     return true;
 }
 
@@ -490,6 +506,13 @@ function unassignTaskFromSpecification(taskId, specId) {
     saveSpecificationsToStorage();
     
     console.log('✅ Task unassigned from specification:', { taskId, specId });
+    
+    // Mettre à jour l'affichage si nous sommes sur la page cahier des charges
+    if (document.getElementById('specifications-list')) {
+        updateSpecificationsList();
+        updateSpecificationStats();
+    }
+    
     return true;
 }
 
@@ -523,11 +546,22 @@ function updateSpecificationTasksDisplay(specId) {
 }
 
 function updateTaskAssignmentSelects() {
+    console.log('🔄 Updating task assignment selects...');
+    console.log('📊 Available tasks:', tasks.length);
+    console.log('📋 Available specifications:', specifications.length);
+    
     const selects = document.querySelectorAll('.task-assign-select');
+    console.log('🎯 Found select elements:', selects.length);
     
     selects.forEach(select => {
         const specId = select.dataset.specId;
+        console.log('🔍 Processing select for spec ID:', specId);
+        
         const spec = specifications.find(s => s.id === specId);
+        if (!spec) {
+            console.warn('⚠️ Specification not found:', specId);
+            return;
+        }
         
         // Clear options
         select.innerHTML = '<option value="">Assigner une tâche existante...</option>';
@@ -537,6 +571,8 @@ function updateTaskAssignmentSelects() {
             return !spec.tachesAssociees || !spec.tachesAssociees.includes(task.id);
         });
         
+        console.log(`📋 Available tasks for ${specId}:`, availableTasks.length);
+        
         availableTasks.forEach(task => {
             const option = document.createElement('option');
             option.value = task.id;
@@ -544,6 +580,8 @@ function updateTaskAssignmentSelects() {
             select.appendChild(option);
         });
     });
+    
+    console.log('✅ Task assignment selects updated');
 }
 
 function updateAllSpecificationDisplays() {
@@ -731,7 +769,7 @@ function createTaskFromForm() {
             title: title,
             deadline: deadline,
             status: statusElement ? statusElement.value : 'not-started',
-            domain: domainElement ? domainElement.value : 'development',
+            domain: domainElement ? domainElement.value : 'site-dev',
             condition: conditionElement ? conditionElement.value : '',
             duration: durationElement ? durationElement.value : '1h',
             difficulty: difficultyElement ? parseInt(difficultyElement.value) : 5,
@@ -1134,7 +1172,7 @@ function createDemoTasks() {
             title: "Conception de l'interface utilisateur",
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Dans 7 jours
             status: 'in-progress',
-            domain: 'design',
+            domain: 'graphics-2d',
             condition: 'Respecter la charte graphique organique',
             duration: '1w',
             difficulty: 6,
@@ -1156,7 +1194,7 @@ function createDemoTasks() {
             title: "Développement de l'API backend",
             deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // Dans 2 jours
             status: 'not-started',
-            domain: 'development',
+            domain: 'site-dev',
             condition: 'Utiliser Node.js et Express',
             duration: '2w',
             difficulty: 8,
@@ -1177,7 +1215,7 @@ function createDemoTasks() {
             title: "Tests et validation du système",
             deadline: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000), // Demain
             status: 'standby',
-            domain: 'testing',
+            domain: 'qa-management',
             condition: 'Tests unitaires et intégration',
             duration: '3d',
             difficulty: 7,
@@ -1221,7 +1259,7 @@ function createDemoTasks() {
             title: "Optimisation des performances",
             deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // Dans 2 semaines
             status: 'not-started',
-            domain: 'development',
+            domain: 'site-dev',
             condition: 'Améliorer les temps de réponse',
             duration: '1w',
             difficulty: 9,
@@ -1744,7 +1782,7 @@ function editTask(taskId) {
     document.getElementById('task-deadline').value = deadlineValue;
     
     document.getElementById('task-status').value = task.status || 'not-started';
-    document.getElementById('task-domain').value = task.domain || 'development';
+    document.getElementById('task-domain').value = task.domain || 'site-dev';
     document.getElementById('task-condition').value = task.condition || '';
     document.getElementById('task-duration').value = task.duration || '1h';
     document.getElementById('task-difficulty').value = task.difficulty || 5;
@@ -2018,13 +2056,350 @@ function getDomainText(domain) {
 }
 
 // ===========================================
+// GESTION DES SPÉCIFICATIONS (CRUD)
+// ===========================================
+
+// Ajouter une nouvelle spécification
+function addSpecification() {
+    console.log('➕ Adding new specification...');
+    
+    const title = document.getElementById('spec-title')?.value.trim();
+    const domain = document.getElementById('spec-domain')?.value;
+    const priority = parseInt(document.getElementById('spec-priority')?.value) || 50;
+    const description = document.getElementById('spec-description')?.value.trim();
+    const status = document.getElementById('spec-status')?.value || 'not-started';
+
+    console.log('📝 Form values:', { title, domain, priority, description, status });
+
+    if (!title || !description) {
+        console.warn('⚠️ Missing required fields');
+        showNotification('Veuillez remplir le titre et la description', 'error');
+        return;
+    }
+
+    const newSpec = {
+        id: 'spec-' + Date.now(),
+        title: title,
+        domain: domain,
+        description: description,
+        priority: priority,
+        status: status
+    };
+
+    console.log('💾 New specification created:', newSpec);
+
+    specifications.push(newSpec);
+    saveSpecificationsToStorage();
+    updateSpecificationsList();
+    clearSpecificationForm();
+    showNotification('Spécification ajoutée avec succès', 'success');
+    
+    console.log('✅ Specification added successfully');
+}
+
+// Modifier une spécification existante
+function editSpecification(specId) {
+    const spec = specifications.find(s => s.id === specId);
+    if (!spec) {
+        showNotification('Spécification non trouvée', 'error');
+        return;
+    }
+
+    // Remplir le formulaire avec les données existantes
+    document.getElementById('spec-title').value = spec.title;
+    document.getElementById('spec-domain').value = spec.domain;
+    document.getElementById('spec-priority').value = spec.priority;
+    document.getElementById('spec-description').value = spec.description;
+    document.getElementById('spec-status').value = spec.status;
+
+    // Modifier le bouton pour la mise à jour
+    const submitBtn = document.getElementById('spec-submit-btn');
+    if (submitBtn) {
+        submitBtn.textContent = 'Mettre à jour';
+        submitBtn.onclick = () => updateSpecification(specId);
+    }
+}
+
+// Mettre à jour une spécification
+function updateSpecification(specId) {
+    const title = document.getElementById('spec-title')?.value.trim();
+    const domain = document.getElementById('spec-domain')?.value;
+    const priority = parseInt(document.getElementById('spec-priority')?.value) || 50;
+    const description = document.getElementById('spec-description')?.value.trim();
+    const status = document.getElementById('spec-status')?.value || 'not-started';
+
+    if (!title || !description) {
+        showNotification('Veuillez remplir le titre et la description', 'error');
+        return;
+    }
+
+    const specIndex = specifications.findIndex(s => s.id === specId);
+    if (specIndex === -1) {
+        showNotification('Spécification non trouvée', 'error');
+        return;
+    }
+
+    specifications[specIndex] = {
+        ...specifications[specIndex],
+        title: title,
+        domain: domain,
+        description: description,
+        priority: priority,
+        status: status
+    };
+
+    saveSpecificationsToStorage();
+    updateSpecificationsList();
+    clearSpecificationForm();
+    showNotification('Spécification mise à jour avec succès', 'success');
+
+    // Remettre le bouton en mode ajout
+    const submitBtn = document.getElementById('spec-submit-btn');
+    if (submitBtn) {
+        submitBtn.textContent = 'Ajouter';
+        submitBtn.onclick = addSpecification;
+    }
+}
+
+// Supprimer une spécification
+function deleteSpecification(specId) {
+    console.log('🗑️ Delete specification called with ID:', specId);
+    console.log('📊 Current specifications:', specifications.length);
+    
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette spécification ?')) {
+        console.log('❌ User cancelled deletion');
+        return;
+    }
+
+    const specIndex = specifications.findIndex(s => s.id === specId);
+    console.log('🔍 Found specification at index:', specIndex);
+    
+    if (specIndex === -1) {
+        console.error('❌ Specification not found for ID:', specId);
+        showNotification('Spécification non trouvée', 'error');
+        return;
+    }
+
+    specifications.splice(specIndex, 1);
+    saveSpecificationsToStorage();
+    updateSpecificationsList();
+    showNotification('Spécification supprimée avec succès', 'success');
+    console.log('✅ Specification deleted successfully');
+}
+
+// Mettre à jour l'affichage de la liste des spécifications
+function updateSpecificationsList() {
+    console.log('🔄 Updating specifications list...');
+    const container = document.getElementById('specifications-list');
+    if (!container) {
+        console.warn('⚠️ Specifications list container not found');
+        return;
+    }
+
+    if (specifications.length === 0) {
+        container.innerHTML = '<p class="no-specs">Aucune caractéristique pour le moment. Utilisez le formulaire ci-dessus pour en ajouter.</p>';
+        updateSpecificationStats();
+        return;
+    }
+
+    let html = '';
+    specifications.forEach(spec => {
+        const domainText = getDomainText(spec.domain || spec.category);
+        const statusText = getStatusText(spec.status);
+        
+        // Get assigned tasks for this specification
+        const assignedTasks = spec.tachesAssociees ? 
+            tasks.filter(task => spec.tachesAssociees.includes(task.id)) : [];
+        
+        let assignedTasksHtml = '';
+        if (assignedTasks.length > 0) {
+            assignedTasksHtml = assignedTasks.map(task => `
+                <div class="assigned-task-item">
+                    <span class="assigned-task-title">${task.title}</span>
+                    <span class="assigned-task-status status-${task.status}">${getStatusText(task.status)}</span>
+                    <button class="unassign-btn" onclick="unassignTaskFromSpecificationUI('${task.id}', '${spec.id}')">
+                        ✖️
+                    </button>
+                </div>
+            `).join('');
+        } else {
+            assignedTasksHtml = '<div class="empty-tasks-message">Aucune tâche assignée</div>';
+        }
+        
+        // Get available tasks for assignment dropdown
+        const availableTasks = tasks.filter(task => {
+            return !spec.tachesAssociees || !spec.tachesAssociees.includes(task.id);
+        });
+        
+        let taskOptionsHtml = '<option value="">Assigner une tâche...</option>';
+        availableTasks.forEach(task => {
+            taskOptionsHtml += `<option value="${task.id}">${task.title} (${getStatusText(task.status)})</option>`;
+        });
+        
+        html += `
+            <div class="spec-card task-card breathing" data-spec-id="${spec.id}" data-category="${spec.domain || spec.category}">
+                <div class="spec-header task-header">
+                    <h4 class="spec-title task-title">${spec.title}</h4>
+                    <span class="spec-status task-status status-${spec.status}">${statusText}</span>
+                </div>
+                
+                <div class="spec-content task-content">
+                    <div class="spec-meta">
+                        <p><strong>🏷️ Domaine:</strong> ${domainText}</p>
+                        <p><strong>⭐ Priorité:</strong> ${spec.priority}/100</p>
+                        <p><strong>📝 Description:</strong> ${spec.description}</p>
+                    </div>
+                    
+                    <!-- Section des tâches assignées -->
+                    <div class="spec-tasks-section">
+                        <h5>📋 Tâches Assignées (${assignedTasks.length})</h5>
+                        <div class="assigned-tasks-list" id="tasks-${spec.id}">
+                            ${assignedTasksHtml}
+                        </div>
+                        <div class="assign-task-container">
+                            <select class="task-assign-select" data-spec-id="${spec.id}">
+                                ${taskOptionsHtml}
+                            </select>
+                            <button class="assign-btn breathing" onclick="assignTaskFromSelectUI('${spec.id}')">
+                                📌 Assigner
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="spec-actions task-actions">
+                        <button class="edit-btn btn btn-secondary breathing" onclick="editSpecification('${spec.id}')">
+                            ✏️ Modifier
+                        </button>
+                        <button class="delete-btn btn btn-danger breathing" onclick="deleteSpecification('${spec.id}')">
+                            🗑️ Supprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+    updateSpecificationStats();
+    console.log('✅ Specifications list updated with', specifications.length, 'items');
+}
+
+// Mettre à jour les statistiques des spécifications
+function updateSpecificationStats() {
+    const totalSpecsEl = document.getElementById('total-specs');
+    const completedSpecsEl = document.getElementById('completed-specs');
+    const assignedTasksEl = document.getElementById('assigned-tasks');
+    
+    // Statistiques sidebar
+    const totalSpecsOverview = document.getElementById('total-specs-overview');
+    const completedSpecsOverview = document.getElementById('completed-specs-overview');
+    
+    const totalSpecs = specifications.length;
+    const completedSpecs = specifications.filter(spec => spec.status === 'completed').length;
+    const totalAssignedTasks = specifications.reduce((total, spec) => {
+        return total + (spec.tachesAssociees ? spec.tachesAssociees.length : 0);
+    }, 0);
+    
+    // Mettre à jour la sidebar
+    if (totalSpecsEl) totalSpecsEl.textContent = totalSpecs;
+    if (completedSpecsEl) completedSpecsEl.textContent = completedSpecs;
+    if (assignedTasksEl) assignedTasksEl.textContent = totalAssignedTasks;
+    
+    // Mettre à jour la vue d'ensemble
+    if (totalSpecsOverview) totalSpecsOverview.textContent = totalSpecs;
+    if (completedSpecsOverview) completedSpecsOverview.textContent = completedSpecs;
+    
+    console.log('📊 Stats updated:', { totalSpecs, completedSpecs, totalAssignedTasks });
+}
+
+// Filtrer les spécifications par domaine
+function filterSpecifications(filter) {
+    console.log('🔍 Filtering specifications by:', filter);
+    
+    const specCards = document.querySelectorAll('.spec-card');
+    
+    specCards.forEach(card => {
+        const category = card.dataset.category;
+        
+        if (filter === 'all' || category === filter) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    console.log('✅ Filter applied:', filter);
+}
+
+// Vider le formulaire de spécification
+function clearSpecificationForm() {
+    console.log('🧹 Clearing specification form...');
+    
+    const titleEl = document.getElementById('spec-title');
+    const domainEl = document.getElementById('spec-domain');
+    const priorityEl = document.getElementById('spec-priority');
+    const descriptionEl = document.getElementById('spec-description');
+    const statusEl = document.getElementById('spec-status');
+    const rangeValueEl = document.querySelector('.range-value');
+    
+    if (titleEl) titleEl.value = '';
+    if (domainEl) domainEl.value = 'site-dev';
+    if (priorityEl) priorityEl.value = '50';
+    if (descriptionEl) descriptionEl.value = '';
+    if (statusEl) statusEl.value = 'not-started';
+    if (rangeValueEl) rangeValueEl.textContent = '50';
+    
+    console.log('✅ Form cleared successfully');
+}
+
+// Initialiser la gestion des spécifications
+function initializeSpecifications() {
+    console.log('🔧 Initializing specifications management...');
+    
+    loadSpecificationsFromStorage();
+    updateSpecificationsList();
+    updateTaskAssignmentSelects(); // Mettre à jour les dropdowns d'assignation
+    updateSpecificationStats(); // Mettre à jour les statistiques
+    
+    // Ajouter les event listeners
+    const submitBtn = document.getElementById('spec-submit-btn');
+    if (submitBtn) {
+        console.log('✅ Submit button found, adding click listener');
+        submitBtn.onclick = addSpecification;
+    } else {
+        console.warn('⚠️ Submit button not found!');
+    }
+    
+    // Vérifier que tous les éléments du formulaire sont présents
+    const requiredElements = [
+        'spec-title', 'spec-domain', 'spec-priority', 
+        'spec-description', 'spec-status', 'specifications-list'
+    ];
+    
+    requiredElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            console.log(`✅ Element found: ${id}`);
+        } else {
+            console.warn(`⚠️ Element missing: ${id}`);
+        }
+    });
+    
+    console.log('✅ Specifications management initialized');
+}
+
+// ===========================================
 // AUTO-INITIALIZATION
 // ===========================================
 // Auto-initialize when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeTaskSystem);
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeTaskSystem();
+        initializeSpecifications();
+    });
 } else {
     initializeTaskSystem();
+    initializeSpecifications();
 }
 
 // Function for testing priority tasks display (call from browser console)
@@ -2040,6 +2415,69 @@ function testPriorityTasks() {
     };
 }
 
+// Function for diagnosing system state
+function diagnosticSystem() {
+    console.log('🔬 DIAGNOSTIC SYSTEM STATE');
+    console.log('============================');
+    console.log('📊 Tasks loaded:', tasks.length);
+    console.log('📋 Specifications loaded:', specifications.length);
+    console.log('🌐 Current URL:', window.location.href);
+    console.log('📄 Document ready state:', document.readyState);
+    
+    // Check key DOM elements
+    const keyElements = [
+        'spec-submit-btn', 'spec-title', 'spec-domain', 
+        'spec-priority', 'spec-description', 'spec-status',
+        'specifications-list'
+    ];
+    
+    console.log('🎯 DOM Elements:');
+    keyElements.forEach(id => {
+        const element = document.getElementById(id);
+        console.log(`  ${id}: ${element ? '✅ Found' : '❌ Missing'}`);
+    });
+    
+    // Check task assignment selects
+    const selects = document.querySelectorAll('.task-assign-select');
+    console.log(`🔽 Task assignment selects: ${selects.length} found`);
+    
+    // Check available functions
+    const functions = [
+        'addSpecification', 'editSpecification', 'updateSpecification',
+        'deleteSpecification', 'assignTaskToSpecification'
+    ];
+    
+    console.log('🔧 Available functions:');
+    functions.forEach(funcName => {
+        const func = window[funcName];
+        console.log(`  ${funcName}: ${typeof func === 'function' ? '✅ Available' : '❌ Missing'}`);
+    });
+    
+    return {
+        tasksCount: tasks.length,
+        specificationsCount: specifications.length,
+        url: window.location.href,
+        readyState: document.readyState,
+        selectsCount: selects.length
+    };
+}
+
 // Make functions available globally for debugging
 window.testPriorityTasks = testPriorityTasks;
 window.createDemoTasks = createDemoTasks;
+window.addSpecification = addSpecification;
+window.editSpecification = editSpecification;
+window.updateSpecification = updateSpecification;
+window.deleteSpecification = deleteSpecification;
+window.updateSpecificationsList = updateSpecificationsList;
+window.clearSpecificationForm = clearSpecificationForm;
+window.initializeSpecifications = initializeSpecifications;
+window.assignTaskToSpecification = assignTaskToSpecification;
+window.unassignTaskFromSpecification = unassignTaskFromSpecification;
+window.assignTaskFromSelectUI = assignTaskFromSelectUI;
+window.unassignTaskFromSpecificationUI = unassignTaskFromSpecificationUI;
+window.updateTaskAssignmentSelects = updateTaskAssignmentSelects;
+window.updateSpecificationStats = updateSpecificationStats;
+window.filterSpecifications = filterSpecifications;
+window.diagnosticSystem = diagnosticSystem;
+window.diagnosticSystem = diagnosticSystem;
