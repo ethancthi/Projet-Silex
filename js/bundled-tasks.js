@@ -102,725 +102,419 @@ const CONFIG = {
     }
 };
 
+// Configuration API
+const API_CONFIG = {
+    BASE_URL: 'http://localhost:3001/api',
+    SOCKET_URL: 'http://localhost:3001',
+    CURRENT_USER: {
+        id: 1, // Par défaut, sera modifié lors de l'authentification
+        username: 'Utilisateur Local',
+        role: 'developer'
+    }
+};
+
+// Variables pour la synchronisation temps réel
+let socket = null;
+let isOnline = false;
+
 // ===========================================
-// UTILITY FUNCTIONS
+// API CLIENT FUNCTIONS
 // ===========================================
-function formatDate(date) {
-    if (!date) return 'Aucune';
-    const d = new Date(date);
-    return d.toLocaleDateString('fr-FR');
-}
 
-function calculateDaysRemaining(deadline) {
-    if (!deadline) return null;
-    const today = new Date();
-    const deadlineDate = new Date(deadline);
-    const timeDiff = deadlineDate.getTime() - today.getTime();
-    return Math.ceil(timeDiff / (1000 * 3600 * 24));
-}
-
-function getStatusText(status) {
-    const statusMap = {
-        'not-started': 'Pas commencé',
-        'in-progress': 'En cours',
-        'standby': 'Stand by',
-        'completed': 'Terminé'
-    };
-    return statusMap[status] || status;
-}
-
-function getDomainText(domain) {
-    const domainMap = {
-        'site-dev': '💻 Développement du site',
-        'game-dev': '🎮 Développement du jeu',
-        'graphics-2d': '🎨 Graphismes 2D',
-        'graphics-3d': '🗿 Graphismes 3D',
-        'sound-design': '🔊 Sound Design',
-        'music': '🎵 Musiques',
-        'level-design': '🗺️ Level Design',
-        'animations': '🎬 Animations',
-        'community': '👥 Community Management',
-        'scenario': '📝 Scénario',
-        'testing': '🧪 Tests',
-        'qa-management': '🔍 QA Management',
-        'hr-management': '👔 RH/Management'
-    };
-    return domainMap[domain] || domain;
-}
-
-function getCaracteristiqueText(caracteristiqueId) {
-    if (!caracteristiqueId) return 'Aucune';
+class SilexAPI {
+    static async request(endpoint, options = {}) {
+        try {
+            const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                },
+                ...options
+            };
+            
+            const response = await fetch(url, config);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('❌ API Request failed:', error);
+            
+            // Fallback en mode hors ligne
+            if (!isOnline) {
+                return this.handleOfflineRequest(endpoint, options);
+            }
+            
+            throw error;
+        }
+    }
     
-    const caracteristiqueMap = {
-        'interface-horror': '🎨 Interface Horror',
-        'gestion-taches': '📋 Gestion des Tâches',
-        'dashboard-analytics': '📊 Analytics',
-        'performance-optim': '⚡ Performance',
-        'architecture-modulaire': '🏗️ Architecture'
-    };
-    return caracteristiqueMap[caracteristiqueId] || caracteristiqueId;
-}
-
-// ===========================================
-// STORAGE FUNCTIONS
-// ===========================================
-function saveTasksToStorage() {
-    try {
-        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(tasks));
-        localStorage.setItem(CONFIG.COUNTER_KEY, taskIdCounter.toString());
-        console.log('✅ Tasks saved to storage');
-    } catch (error) {
-        console.error('❌ Error saving tasks:', error);
-    }
-}
-
-function saveSpecificationsToStorage() {
-    try {
-        localStorage.setItem(CONFIG.SPECS_KEY, JSON.stringify(specifications));
-        console.log('✅ Specifications saved to storage');
-    } catch (error) {
-        console.error('❌ Error saving specifications:', error);
-    }
-}
-
-function loadTasksFromStorage() {
-    try {
-        const storedTasks = localStorage.getItem(CONFIG.STORAGE_KEY);
-        const storedCounter = localStorage.getItem(CONFIG.COUNTER_KEY);
+    static handleOfflineRequest(endpoint, options) {
+        console.warn('⚠️ Working in offline mode for:', endpoint);
         
-        if (storedTasks) {
-            tasks = JSON.parse(storedTasks);
-            console.log('✅ Loaded tasks from storage:', tasks.length);
+        // Retourner les données du localStorage en mode hors ligne
+        if (endpoint === '/tasks' && options.method !== 'POST') {
+            return loadTasksFromStorage();
+        } else if (endpoint === '/specifications' && options.method !== 'POST') {
+            return loadSpecificationsFromStorage();
         }
         
-        if (storedCounter) {
-            taskIdCounter = parseInt(storedCounter);
-            console.log('✅ Loaded task counter:', taskIdCounter);
-        }
-        
-        return tasks;
-    } catch (error) {
-        console.error('❌ Error loading tasks:', error);
         return [];
     }
+    
+    // Méthodes pour les tâches
+    static async getTasks() {
+        return await this.request('/tasks');
+    }
+    
+    static async createTask(taskData) {
+        return await this.request('/tasks', {
+            method: 'POST',
+            body: JSON.stringify({
+                ...taskData,
+                created_by: API_CONFIG.CURRENT_USER.id
+            })
+        });
+    }
+    
+    static async updateTask(taskId, taskData) {
+        return await this.request(`/tasks/${taskId}`, {
+            method: 'PUT',
+            body: JSON.stringify(taskData)
+        });
+    }
+    
+    static async deleteTask(taskId) {
+        return await this.request(`/tasks/${taskId}`, {
+            method: 'DELETE'
+        });
+    }
+    
+    // Méthodes pour les spécifications
+    static async getSpecifications() {
+        return await this.request('/specifications');
+    }
+    
+    static async createSpecification(specData) {
+        return await this.request('/specifications', {
+            method: 'POST',
+            body: JSON.stringify({
+                ...specData,
+                created_by: API_CONFIG.CURRENT_USER.id
+            })
+        });
+    }
+    
+    static async updateSpecification(specId, specData) {
+        return await this.request(`/specifications/${specId}`, {
+            method: 'PUT',
+            body: JSON.stringify(specData)
+        });
+    }
+    
+    static async deleteSpecification(specId) {
+        return await this.request(`/specifications/${specId}`, {
+            method: 'DELETE'
+        });
+    }
+    
+    // Méthodes pour les utilisateurs
+    static async getUsers() {
+        return await this.request('/users');
+    }
+    
+    static async getOnlineUsers() {
+        return await this.request('/users/online');
+    }
+    
+    // Méthodes d'assignation
+    static async assignTask(taskId, specificationId) {
+        return await this.request('/assign-task', {
+            method: 'POST',
+            body: JSON.stringify({ taskId, specificationId })
+        });
+    }
+    
+    static async unassignTask(taskId) {
+        return await this.request('/unassign-task', {
+            method: 'POST',
+            body: JSON.stringify({ taskId })
+        });
+    }
 }
 
-function loadSpecificationsFromStorage() {
+// ===========================================
+// REAL-TIME SYNCHRONIZATION
+// ===========================================
+
+function initializeRealTimeSync() {
     try {
-        const storedSpecs = localStorage.getItem(CONFIG.SPECS_KEY);
-        
-        if (storedSpecs) {
-            specifications = JSON.parse(storedSpecs);
-            console.log('✅ Loaded specifications from storage:', specifications.length);
-        } else {
-            // Première fois : utiliser les spécifications prédéfinies
-            specifications = [...CAHIER_DES_CHARGES_SPECS];
-            saveSpecificationsToStorage();
-            console.log('✅ Initialized specifications with defaults');
-        }
-        
-        return specifications;
-    } catch (error) {
-        console.error('❌ Error loading specifications:', error);
-        // En cas d'erreur, utiliser les spécifications par défaut
-        specifications = [...CAHIER_DES_CHARGES_SPECS];
-        return specifications;
-    }
-}
-
-// ===========================================
-// SUBTASK FUNCTIONS
-// ===========================================
-function addSubtask() {
-    const input = document.getElementById('new-subtask-input');
-    const subtasksList = document.getElementById('subtasks-list');
-    
-    if (!input || !subtasksList) {
-        console.warn('⚠️ Subtask elements not found');
-        return;
-    }
-    
-    const text = input.value.trim();
-    if (!text) {
-        showNotification('Veuillez saisir le texte de la sous-tâche', 'error');
-        return;
-    }
-    
-    const subtaskId = 'subtask-' + Date.now();
-    const subtaskElement = document.createElement('div');
-    subtaskElement.className = 'subtask-item';
-    subtaskElement.dataset.level = '0';
-    subtaskElement.innerHTML = `
-        <div class="subtask-content">
-            <input type="checkbox" class="subtask-checkbox" id="${subtaskId}">
-            <label for="${subtaskId}" class="subtask-text">${text}</label>
-            <button type="button" class="remove-subtask-btn" onclick="removeSubtask(this)">×</button>
-        </div>
-    `;
-    
-    subtasksList.appendChild(subtaskElement);
-    input.value = '';
-    
-    console.log('✅ Subtask added:', text);
-}
-
-function removeSubtask(button) {
-    const subtaskItem = button.closest('.subtask-item');
-    if (subtaskItem) {
-        subtaskItem.remove();
-        console.log('✅ Subtask removed');
-    }
-}
-
-// ===========================================
-// DASHBOARD FUNCTIONS
-// ===========================================
-function updateDashboard() {
-    console.log('🐛 DEBUG: Updating dashboard with', tasks.length, 'tasks');
-    
-    // Calculate statistics
-    const totalTasks = tasks.length;
-    const completedTasks = tasks.filter(task => task.status === 'completed').length;
-    const pendingTasks = tasks.filter(task => task.status === 'in-progress').length;
-    const overdueTasks = tasks.filter(task => {
-        if (!task.deadline) return false;
-        const today = new Date();
-        const deadline = new Date(task.deadline);
-        return deadline < today && task.status !== 'completed';
-    }).length;
-    
-    // Update counters
-    const totalElement = document.getElementById('total-tasks');
-    const completedElement = document.getElementById('completed-tasks');
-    const pendingElement = document.getElementById('pending-tasks');
-    const overdueElement = document.getElementById('overdue-tasks');
-    
-    if (totalElement) totalElement.textContent = totalTasks;
-    if (completedElement) completedElement.textContent = completedTasks;
-    if (pendingElement) pendingElement.textContent = pendingTasks;
-    if (overdueElement) overdueElement.textContent = overdueTasks;
-    
-    // Update priority tasks
-    updatePriorityTasks();
-    
-    // Update quick assignment dropdown
-    updateQuickAssignmentTasks();
-    
-    console.log('✅ Dashboard updated:', { totalTasks, completedTasks, pendingTasks, overdueTasks });
-}
-
-function updatePriorityTasks() {
-    console.log('🔄 Updating priority tasks...');
-    const priorityContainer = document.getElementById('priority-tasks');
-    if (!priorityContainer) {
-        console.warn('⚠️ Priority tasks container not found');
-        return;
-    }
-    
-    // Get top 3 highest priority tasks that are not completed
-    const priorityTasks = tasks
-        .filter(task => task.status !== 'completed')
-        .sort((a, b) => b.priority - a.priority)
-        .slice(0, 3);
-    
-    console.log('📊 Priority tasks found:', priorityTasks.length, priorityTasks.map(t => ({title: t.title, priority: t.priority})));
-    
-    if (priorityTasks.length === 0) {
-        priorityContainer.innerHTML = '<p class="no-priority-tasks">Aucune tâche prioritaire</p>';
-        return;
-    }
-    
-    let html = '';
-    priorityTasks.forEach((task, index) => {
-        const daysRemaining = calculateDaysRemaining(task.deadline);
-        
-        // Déterminer la classe d'urgence
-        let urgencyClass = '';
-        if (daysRemaining !== null) {
-            if (daysRemaining < 0) {
-                urgencyClass = 'priority-overdue';
-            } else if (daysRemaining <= 3) {
-                urgencyClass = 'priority-urgent';
-            } else if (daysRemaining <= 7) {
-                urgencyClass = 'priority-warning';
-            }
-        }
-        
-        // Calculer le niveau de priorité pour le style
-        let priorityLevel = '';
-        if (task.priority >= 90) priorityLevel = 'critical';
-        else if (task.priority >= 75) priorityLevel = 'high';
-        else if (task.priority >= 60) priorityLevel = 'medium';
-        else priorityLevel = 'normal';
-        
-        html += `
-            <div class="priority-task-item-simple ${urgencyClass} priority-${priorityLevel}" data-task-id="${task.id}" onclick="scrollToTask(${task.id})">
-                <div class="priority-task-rank">#${index + 1}</div>
-                <div class="priority-task-title-simple">${task.title}</div>
-                <div class="priority-badge priority-${priorityLevel}">${task.priority}</div>
-            </div>
-        `;
-    });
-    
-    priorityContainer.innerHTML = html;
-    console.log('✅ Priority tasks updated successfully with', priorityTasks.length, 'tasks');
-    console.log('📝 Generated HTML:', html.substring(0, 200) + '...');
-}
-
-// Fonction pour faire défiler jusqu'à une tâche spécifique dans la liste
-function scrollToTask(taskId) {
-    console.log('🎯 Scrolling to task and opening details:', taskId);
-    
-    // Attendre un petit moment pour que l'affichage soit prêt
-    setTimeout(() => {
-        const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
-        if (taskElement) {
-            // Scroll smooth jusqu'à l'élément
-            taskElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
+        // Importer socket.io-client
+        if (typeof io !== 'undefined') {
+            socket = io(API_CONFIG.SOCKET_URL);
+            
+            socket.on('connect', () => {
+                console.log('🔌 Connected to real-time server');
+                isOnline = true;
+                
+                // S'identifier auprès du serveur
+                socket.emit('user-login', API_CONFIG.CURRENT_USER);
+                
+                showNotification('Connecté au serveur en temps réel', 'success');
             });
             
-            // Ajouter un effet visuel temporaire
-            taskElement.style.backgroundColor = 'rgba(163, 22, 33, 0.3)';
-            taskElement.style.borderColor = 'var(--rouge-sang)';
-            taskElement.style.transform = 'scale(1.02)';
+            socket.on('disconnect', () => {
+                console.log('🔌 Disconnected from real-time server');
+                isOnline = false;
+                showNotification('Connexion au serveur perdue - Mode hors ligne', 'warning');
+            });
             
-            // Retirer l'effet après 2 secondes
-            setTimeout(() => {
-                taskElement.style.backgroundColor = '';
-                taskElement.style.borderColor = '';
-                taskElement.style.transform = '';
-            }, 2000);
+            // Écouter les mises à jour de données
+            socket.on('data-update', (update) => {
+                handleRealTimeUpdate(update);
+            });
             
-            // Ouvrir automatiquement les détails de la tâche après le scroll
-            setTimeout(() => {
-                showTaskDetails(taskId);
-                console.log('✅ Opened task details for task:', taskId);
-            }, 500); // Délai pour que le scroll soit fini
+            // Écouter les connexions/déconnexions d'utilisateurs
+            socket.on('user-joined', (userData) => {
+                showNotification(`${userData.username} s'est connecté`, 'info', 2000);
+                updateOnlineUsers();
+            });
             
-            console.log('✅ Scrolled to task successfully');
+            socket.on('user-left', (userData) => {
+                showNotification(`${userData.username} s'est déconnecté`, 'info', 2000);
+                updateOnlineUsers();
+            });
+            
         } else {
-            console.warn('⚠️ Task element not found in main list');
-            showNotification('Tâche non trouvée dans la liste', 'warning');
+            console.warn('⚠️ Socket.IO client not available - working in offline mode');
+            isOnline = false;
         }
-    }, 100);
-}
-
-function updateQuickAssignmentTasks() {
-    const quickAssignSelect = document.getElementById('quick-assign-task');
-    if (!quickAssignSelect) return;
-    
-    // Clear existing options except the first placeholder
-    quickAssignSelect.innerHTML = '<option value="">Sélectionner une tâche...</option>';
-    
-    // Add tasks that are not completed
-    const availableTasks = tasks.filter(task => task.status !== 'completed');
-    
-    availableTasks.forEach(task => {
-        const option = document.createElement('option');
-        option.value = task.id;
-        option.textContent = `${task.title} (${getStatusText(task.status)})`;
-        quickAssignSelect.appendChild(option);
-    });
-    
-    console.log('✅ Quick assignment dropdown updated with', availableTasks.length, 'tasks');
-}
-
-// ===========================================
-// SPECIFICATIONS FUNCTIONS
-// ===========================================
-function assignTaskToSpecification(taskId, specId) {
-    console.log('🐛 DEBUG: assignTaskToSpecification called', { taskId, specId });
-    
-    if (!taskId || !specId) {
-        console.error('❌ TaskId or SpecId is missing');
-        return false;
-    }
-    
-    // Trouver la tâche
-    const task = tasks.find(t => t.id == taskId);
-    if (!task) {
-        console.error('❌ Task not found:', taskId);
-        return false;
-    }
-    
-    // Trouver la spécification
-    let spec = specifications.find(s => s.id === specId);
-    if (!spec) {
-        console.error('❌ Specification not found:', specId);
-        return false;
-    }
-    
-    // Retirer la tâche de toutes les autres spécifications d'abord
-    specifications.forEach(s => {
-        if (s.tachesAssociees && s.tachesAssociees.includes(taskId)) {
-            s.tachesAssociees = s.tachesAssociees.filter(id => id != taskId);
-        }
-    });
-    
-    // Ajouter la tâche à la nouvelle spécification
-    if (!spec.tachesAssociees) {
-        spec.tachesAssociees = [];
-    }
-    
-    if (!spec.tachesAssociees.includes(taskId)) {
-        spec.tachesAssociees.push(taskId);
-    }
-    
-    // Mettre à jour la tâche avec la nouvelle caractéristique
-    task.caracteristique = specId;
-    
-    // Sauvegarder
-    saveTasksToStorage();
-    saveSpecificationsToStorage();
-    
-    console.log('✅ Task assigned to specification:', { taskId, specId });
-    
-    // Mettre à jour l'affichage si nous sommes sur la page cahier des charges
-    if (document.getElementById('specifications-list')) {
-        updateSpecificationsList();
-        updateSpecificationStats();
-    }
-    
-    return true;
-}
-
-function unassignTaskFromSpecification(taskId, specId) {
-    console.log('🐛 DEBUG: unassignTaskFromSpecification called', { taskId, specId });
-    
-    // Trouver la tâche
-    const task = tasks.find(t => t.id == taskId);
-    if (task) {
-        task.caracteristique = '';
-    }
-    
-    // Trouver la spécification et retirer la tâche
-    const spec = specifications.find(s => s.id === specId);
-    if (spec && spec.tachesAssociees) {
-        spec.tachesAssociees = spec.tachesAssociees.filter(id => id != taskId);
-    }
-    
-    // Sauvegarder
-    saveTasksToStorage();
-    saveSpecificationsToStorage();
-    
-    console.log('✅ Task unassigned from specification:', { taskId, specId });
-    
-    // Mettre à jour l'affichage si nous sommes sur la page cahier des charges
-    if (document.getElementById('specifications-list')) {
-        updateSpecificationsList();
-        updateSpecificationStats();
-    }
-    
-    return true;
-}
-
-function updateSpecificationTasksDisplay(specId) {
-    const container = document.getElementById(`tasks-${specId}`);
-    if (!container) return;
-    
-    const spec = specifications.find(s => s.id === specId);
-    if (!spec || !spec.tachesAssociees || spec.tachesAssociees.length === 0) {
-        container.innerHTML = '<div class="empty-tasks-message">Aucune tâche assignée</div>';
-        return;
-    }
-    
-    let html = '';
-    spec.tachesAssociees.forEach(taskId => {
-        const task = tasks.find(t => t.id == taskId);
-        if (task) {
-            html += `
-                <div class="assigned-task-item">
-                    <span class="assigned-task-title">${task.title}</span>
-                    <span class="assigned-task-status status-${task.status}">${getStatusText(task.status)}</span>
-                    <button class="unassign-btn" onclick="unassignTaskFromSpecificationUI('${taskId}', '${specId}')">
-                        ×
-                    </button>
-                </div>
-            `;
-        }
-    });
-    
-    container.innerHTML = html;
-}
-
-function updateTaskAssignmentSelects() {
-    console.log('🔄 Updating task assignment selects...');
-    console.log('📊 Available tasks:', tasks.length);
-    console.log('📋 Available specifications:', specifications.length);
-    
-    const selects = document.querySelectorAll('.task-assign-select');
-    console.log('🎯 Found select elements:', selects.length);
-    
-    selects.forEach(select => {
-        const specId = select.dataset.specId;
-        console.log('🔍 Processing select for spec ID:', specId);
-        
-        const spec = specifications.find(s => s.id === specId);
-        if (!spec) {
-            console.warn('⚠️ Specification not found:', specId);
-            return;
-        }
-        
-        // Clear options
-        select.innerHTML = '<option value="">Assigner une tâche existante...</option>';
-        
-        // Add available tasks (not assigned to this specification)
-        const availableTasks = tasks.filter(task => {
-            return !spec.tachesAssociees || !spec.tachesAssociees.includes(task.id);
-        });
-        
-        console.log(`📋 Available tasks for ${specId}:`, availableTasks.length);
-        
-        availableTasks.forEach(task => {
-            const option = document.createElement('option');
-            option.value = task.id;
-            option.textContent = `${task.title} (${getStatusText(task.status)})`;
-            select.appendChild(option);
-        });
-    });
-    
-    console.log('✅ Task assignment selects updated');
-}
-
-function updateAllSpecificationDisplays() {
-    CAHIER_DES_CHARGES_SPECS.forEach(spec => {
-        updateSpecificationTasksDisplay(spec.id);
-    });
-    updateTaskAssignmentSelects();
-}
-
-// UI Functions for specification management
-function assignTaskFromSelectUI(specId) {
-    const select = document.querySelector(`.task-assign-select[data-spec-id="${specId}"]`);
-    if (!select || !select.value) {
-        showNotification('Veuillez sélectionner une tâche', 'error');
-        return;
-    }
-    
-    const taskId = select.value;
-    if (assignTaskToSpecification(taskId, specId)) {
-        updateSpecificationTasksDisplay(specId);
-        updateTaskAssignmentSelects();
-        select.value = ''; // Reset select
-        showNotification('Tâche assignée avec succès', 'success');
-    } else {
-        showNotification('Erreur lors de l\'assignation', 'error');
+    } catch (error) {
+        console.error('❌ Failed to initialize real-time sync:', error);
+        isOnline = false;
     }
 }
 
-function unassignTaskFromSpecificationUI(taskId, specId) {
-    if (unassignTaskFromSpecification(taskId, specId)) {
-        updateSpecificationTasksDisplay(specId);
-        updateTaskAssignmentSelects();
-        showNotification('Tâche désassignée avec succès', 'success');
-    } else {
-        showNotification('Erreur lors de la désassignation', 'error');
-    }
-}
-
-// ===========================================
-// QUICK ASSIGNMENT FUNCTIONALITY
-// ===========================================
-function handleQuickAssignment() {
-    const taskSelect = document.getElementById('quick-assign-task');
-    const userSelect = document.getElementById('quick-assign-user');
+function handleRealTimeUpdate(update) {
+    console.log('📡 Real-time update received:', update);
     
-    if (!taskSelect || !userSelect) {
-        console.warn('⚠️ Quick assignment elements not found');
-        return;
-    }
-    
-    const taskId = parseInt(taskSelect.value);
-    const assignee = userSelect.value;
-    
-    if (!taskId || !assignee) {
-        showNotification('Veuillez sélectionner une tâche et un assigné', 'error');
-        return;
-    }
-    
-    // Find and update the task
-    const taskIndex = tasks.findIndex(task => task.id === taskId);
-    if (taskIndex === -1) {
-        showNotification('Tâche non trouvée', 'error');
-        return;
-    }
-    
-    tasks[taskIndex].assignee = assignee;
-    saveTasksToStorage();
-    updateTasksList();
-    updateDashboard();
-    
-    // Reset selects
-    taskSelect.value = '';
-    userSelect.value = '';
-    
-    showNotification(`Tâche assignée à ${assignee}`, 'success');
-    console.log('✅ Task assigned:', taskId, 'to', assignee);
-}
-
-// ===========================================
-// TASK FILTERING FUNCTIONALITY
-// ===========================================
-function setupTaskFiltering() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const filter = this.dataset.filter;
-            
-            // Update active button
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Filter tasks
-            filterTasks(filter);
-            
-            console.log('✅ Filter applied:', filter);
-        });
-    });
-}
-
-function filterTasks(filter) {
-    currentFilter = filter;
-    updateTasksList();
-}
-
-function getFilteredTasks() {
-    if (currentFilter === 'all') {
-        return tasks;
-    }
-    
-    return tasks.filter(task => task.status === currentFilter);
-}
-
-function calculateProgressFromSubtasks(subtasks) {
-    if (!subtasks || subtasks.length === 0) {
-        return 0;
-    }
-    
-    const completedCount = subtasks.filter(subtask => subtask.completed).length;
-    return Math.round((completedCount / subtasks.length) * 100);
-}
-
-function createTaskFromForm() {
-    console.log('🐛 DEBUG: createTaskFromForm started');
-    
-    try {
-        // Get form elements
-        const titleElement = document.getElementById('task-title');
-        const deadlineElement = document.getElementById('task-deadline');
-        const statusElement = document.getElementById('task-status');
-        const domainElement = document.getElementById('task-domain');
-        const conditionElement = document.getElementById('task-condition');
-        const durationElement = document.getElementById('task-duration');
-        const difficultyElement = document.getElementById('task-difficulty');
-        const priorityElement = document.getElementById('task-priority');
-        const assigneeElement = document.getElementById('task-assignee');
-        const caracteristiqueElement = document.getElementById('task-caracteristique');
-        
-        // Validate required elements
-        if (!titleElement || !deadlineElement) {
-            throw new Error('Required form elements not found');
-        }
-        
-        // Get values
-        const title = titleElement.value.trim();
-        const deadline = new Date(deadlineElement.value);
-        
-        if (!title) {
-            throw new Error('Task title is required');
-        }
-        
-        // Récupérer les sous-tâches
-        const subtasks = [];
-        const subtaskElements = document.querySelectorAll('.subtask-item');
-        console.log('🐛 DEBUG: Found subtask elements:', subtaskElements.length);
-        
-        subtaskElements.forEach((element, index) => {
-            // Essayer différents sélecteurs pour la compatibilité
-            const textElement = element.querySelector('.subtask-label') || element.querySelector('.subtask-text');
-            const checkboxElement = element.querySelector('.subtask-checkbox');
-            
-            if (textElement && checkboxElement) {
-                const text = textElement.textContent || textElement.innerText || '';
-                const checked = checkboxElement.checked;
-                const level = parseInt(element.dataset.level) || 0;
-                
-                console.log('🐛 DEBUG: Processing subtask:', { text, checked, level });
-                
-                subtasks.push({
-                    id: Date.now() + index,
-                    text: text,
-                    completed: checked,
-                    level: level,
-                    createdAt: new Date()
-                });
+    switch (update.type) {
+        case 'task-created':
+        case 'task-updated':
+            // Mettre à jour la tâche dans le tableau local
+            const taskIndex = tasks.findIndex(t => t.id === update.data.id);
+            if (taskIndex !== -1) {
+                tasks[taskIndex] = update.data;
             } else {
-                console.warn('⚠️ Subtask element missing text or checkbox:', element);
+                tasks.push(update.data);
             }
-        });
+            updateTasksList();
+            updateDashboard();
+            break;
+            
+        case 'task-deleted':
+            tasks = tasks.filter(t => t.id !== update.data.id);
+            updateTasksList();
+            updateDashboard();
+            break;
+            
+        case 'specification-created':
+        case 'specification-updated':
+            const specIndex = specifications.findIndex(s => s.id === update.data.id);
+            if (specIndex !== -1) {
+                specifications[specIndex] = update.data;
+            } else {
+                specifications.push(update.data);
+            }
+            if (document.getElementById('specifications-list')) {
+                updateSpecificationsList();
+                updateSpecificationStats();
+            }
+            break;
+            
+        case 'specification-deleted':
+            specifications = specifications.filter(s => s.id !== update.data.id);
+            if (document.getElementById('specifications-list')) {
+                updateSpecificationsList();
+                updateSpecificationStats();
+            }
+            break;
+            
+        case 'task-assigned':
+        case 'task-unassigned':
+            // Recharger les données pour s'assurer de la cohérence
+            loadDataFromAPI();
+            break;
+    }
+}
+
+async function updateOnlineUsers() {
+    try {
+        const onlineUsers = await SilexAPI.getOnlineUsers();
         
-        console.log('🐛 DEBUG: Collected subtasks:', subtasks);
+        // Mettre à jour l'affichage des utilisateurs en ligne
+        const onlineUsersContainer = document.getElementById('online-users');
+        if (onlineUsersContainer) {
+            onlineUsersContainer.innerHTML = onlineUsers.map(user => `
+                <div class="online-user">
+                    <div class="user-avatar">${user.username.charAt(0).toUpperCase()}</div>
+                    <span class="user-name">${user.username}</span>
+                    <div class="online-indicator"></div>
+                </div>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('❌ Failed to update online users:', error);
+    }
+}
+
+// ===========================================
+// MODIFIED STORAGE FUNCTIONS
+// ===========================================
+
+async function loadDataFromAPI() {
+    try {
+        console.log('🔄 Loading data from API...');
         
-        const task = {
-            id: incrementTaskIdCounter(),
-            title: title,
-            deadline: deadline,
-            status: statusElement ? statusElement.value : 'not-started',
-            domain: domainElement ? domainElement.value : 'site-dev',
-            condition: conditionElement ? conditionElement.value : '',
-            duration: durationElement ? durationElement.value : '1h',
-            difficulty: difficultyElement ? parseInt(difficultyElement.value) : 5,
-            priority: priorityElement ? parseInt(priorityElement.value) : 50,
-            assignee: assigneeElement ? (assigneeElement.value || 'Non assigné') : 'Non assigné',
-            caracteristique: caracteristiqueElement ? caracteristiqueElement.value : '',
-            createdAt: new Date(),
-            progress: calculateProgressFromSubtasks(subtasks),
-            steps: [],
-            subtasks: subtasks
-        };
+        // Charger les tâches
+        const apiTasks = await SilexAPI.getTasks();
+        tasks.length = 0;
+        tasks.push(...apiTasks);
         
-        console.log('🐛 DEBUG: Task created successfully with subtasks:', task);
-        console.log('🐛 DEBUG: Subtasks detail:', task.subtasks);
-        return task;
+        // Charger les spécifications
+        const apiSpecs = await SilexAPI.getSpecifications();
+        specifications.length = 0;
+        specifications.push(...apiSpecs);
+        
+        // Mettre à jour l'UI
+        updateTasksList();
+        updateDashboard();
+        
+        if (document.getElementById('specifications-list')) {
+            updateSpecificationsList();
+            updateSpecificationStats();
+        }
+        
+        console.log('✅ Data loaded from API:', { tasks: tasks.length, specs: specifications.length });
         
     } catch (error) {
-        console.error('❌ ERROR in createTaskFromForm:', error);
+        console.error('❌ Failed to load data from API, falling back to local storage:', error);
+        
+        // Fallback vers le localStorage
+        loadTasksFromStorage();
+        loadSpecificationsFromStorage();
+        
+        showNotification('Chargement depuis le cache local - Données possiblement obsolètes', 'warning');
+    }
+}
+
+// Modifier les fonctions de sauvegarde pour utiliser l'API
+async function saveTaskToAPI(task, isUpdate = false) {
+    try {
+        if (isUpdate) {
+            return await SilexAPI.updateTask(task.id, task);
+        } else {
+            return await SilexAPI.createTask(task);
+        }
+    } catch (error) {
+        console.error('❌ Failed to save task to API:', error);
+        
+        // Fallback vers localStorage
+        saveTasksToStorage();
         throw error;
     }
 }
 
-function addTask(task) {
-    console.log('🐛 DEBUG: addTask called with:', task);
-    console.log('🐛 DEBUG: Current tasks array length:', tasks.length);
-    
-    tasks.push(task);
-    console.log('🐛 DEBUG: Task added. New tasks array length:', tasks.length);
-    
-    // Si la tâche a une caractéristique assignée, l'ajouter à la spécification
-    if (task.caracteristique) {
-        const spec = specifications.find(s => s.id === task.caracteristique);
-        if (spec) {
-            if (!spec.tachesAssociees) {
-                spec.tachesAssociees = [];
-            }
-            if (!spec.tachesAssociees.includes(task.id)) {
-                spec.tachesAssociees.push(task.id);
-            }
-            saveSpecificationsToStorage();
-            console.log('🐛 DEBUG: Task linked to specification:', task.caracteristique);
-            
-            // Mettre à jour l'affichage des spécifications si on est sur la page cahier des charges
-            if (document.getElementById('specifications-list')) {
-                updateAllSpecificationDisplays();
-            }
-        }
+async function deleteTaskFromAPI(taskId) {
+    try {
+        await SilexAPI.deleteTask(taskId);
+    } catch (error) {
+        console.error('❌ Failed to delete task from API:', error);
+        
+        // Fallback vers localStorage
+        saveTasksToStorage();
+        throw error;
     }
+}
+
+// Modifier la fonction addTask pour utiliser l'API
+async function addTask(task) {
+    console.log('🐛 DEBUG: addTask called with:', task);
     
-    saveTasksToStorage();
-    console.log('🐛 DEBUG: Saved to storage successfully');
+    try {
+        // Sauvegarder vers l'API
+        const savedTask = await saveTaskToAPI(task);
+        
+        // Mettre à jour le tableau local
+        const existingIndex = tasks.findIndex(t => t.id === savedTask.id);
+        if (existingIndex !== -1) {
+            tasks[existingIndex] = savedTask;
+        } else {
+            tasks.push(savedTask);
+        }
+        
+        console.log('✅ Task saved to API and local state updated');
+        
+    } catch (error) {
+        console.error('❌ Failed to save task to API, saving locally only:', error);
+        
+        // Fallback vers l'ajout local uniquement
+        tasks.push(task);
+        saveTasksToStorage();
+        
+        showNotification('Tâche sauvegardée localement - Synchronisation différée', 'warning');
+    }
+}
+
+// Modifier les fonctions de spécifications pour utiliser l'API
+async function addSpecification() {
+    console.log('➕ Adding new specification...');
+    
+    const title = document.getElementById('spec-title')?.value.trim();
+    const domain = document.getElementById('spec-domain')?.value;
+    const priority = parseInt(document.getElementById('spec-priority')?.value) || 50;
+    const description = document.getElementById('spec-description')?.value.trim();
+    const status = document.getElementById('spec-status')?.value || 'not-started';
+
+    if (!title || !description) {
+        showNotification('Veuillez remplir le titre et la description', 'error');
+        return;
+    }
+
+    const newSpec = {
+        id: 'spec-' + Date.now(),
+        title: title,
+        domain: domain,
+        description: description,
+        priority: priority,
+        status: status
+    };
+
+    try {
+        // Sauvegarder vers l'API
+        const savedSpec = await SilexAPI.createSpecification(newSpec);
+        
+        // Mettre à jour le tableau local
+        specifications.push(savedSpec);
+        
+        updateSpecificationsList();
+        clearSpecificationForm();
+        showNotification('Spécification ajoutée avec succès', 'success');
+        
+    } catch (error) {
+        console.error('❌ Failed to save specification to API:', error);
+        
+        // Fallback vers l'ajout local
+        specifications.push(newSpec);
+        saveSpecificationsToStorage();
+        updateSpecificationsList();
+        clearSpecificationForm();
+        
+        showNotification('Spécification sauvegardée localement - Synchronisation différée', 'warning');
+    }
 }
 
 // ===========================================
@@ -1292,19 +986,12 @@ function createDemoTasks() {
 // ===========================================
 function initializeTaskSystem() {
     console.log('🚀 Initializing bundled task system...');
-    console.log('📍 Current tasks count:', tasks.length);
     
-    // Load existing tasks and specifications
-    loadTasksFromStorage();
-    loadSpecificationsFromStorage();
+    // Initialiser la synchronisation temps réel
+    initializeRealTimeSync();
     
-    console.log('📍 After loading from storage, tasks count:', tasks.length);
-    
-    // If no tasks exist, create demo tasks
-    if (tasks.length === 0) {
-        console.log('🎭 No tasks found, creating demo tasks...');
-        createDemoTasks();
-    }
+    // Charger les données depuis l'API ou localStorage
+    await loadDataFromAPI();
     
     // Setup form submission
     const taskForm = document.getElementById('task-form');
@@ -1494,20 +1181,17 @@ function initializeFilterControls() {
     const filterButtons = document.querySelectorAll('.filter-btn');
     
     filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Remove active class from all buttons
+        button.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            
+            // Update active button
             filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
             
-            // Add active class to clicked button
-            button.classList.add('active');
+            // Filter tasks
+            filterTasks(filter);
             
-            // Get filter value
-            const filterValue = button.dataset.filter;
-            
-            // Update task list with filter
-            updateTasksListWithFilter(filterValue);
-            
-            console.log('✅ Filter applied:', filterValue);
+            console.log('✅ Filter applied:', filter);
         });
     });
     
@@ -1558,633 +1242,18 @@ function initializeSpecificationControls() {
     console.log('✅ Specification controls initialized');
 }
 
-function updateTasksListWithFilter(filterValue) {
-    console.log('🐛 DEBUG: updateTasksListWithFilter called with:', filterValue);
-    
-    const tasksListElement = document.getElementById('tasks-list');
-    if (!tasksListElement) {
-        console.warn('⚠️ Tasks list element not found');
+// Add CSS loading function for specifications
+function loadSpecificationCSS() {
+    // Check if specifications CSS is already loaded
+    if (document.querySelector('link[href*="specifications.css"]')) {
         return;
     }
     
-    let filteredTasks = tasks;
-    
-    // Apply filter
-    if (filterValue && filterValue !== 'all') {
-        filteredTasks = tasks.filter(task => task.status === filterValue);
-    }
-    
-    if (filteredTasks.length === 0) {
-        tasksListElement.innerHTML = '<p class="no-tasks">Aucune tâche pour ce filtre.</p>';
-        return;
-    }
-    
-    let html = '';
-    filteredTasks.forEach(task => {
-        const daysRemaining = calculateDaysRemaining(task.deadline);
-        const statusText = getStatusText(task.status);
-        const domainText = getDomainText(task.domain);
-        const caracteristiqueText = getCaracteristiqueText(task.caracteristique);
-        
-        // Déterminer la classe d'urgence
-        let urgencyClass = '';
-        let urgencyText = '';
-        if (daysRemaining !== null) {
-            if (daysRemaining < 0) {
-                urgencyClass = 'task-overdue';
-                urgencyText = '⚠️ En retard';
-            } else if (daysRemaining <= 3) {
-                urgencyClass = 'task-urgent';
-                urgencyText = '🔥 Urgent';
-            } else if (daysRemaining <= 7) {
-                urgencyClass = 'task-warning';
-                urgencyText = '⏰ Bientôt';
-            }
-        }
-        
-        // Format subtasks display avec barre de progression
-        let subtasksHtml = '';
-        if (task.subtasks && task.subtasks.length > 0) {
-            const completedSubtasks = task.subtasks.filter(st => st.completed).length;
-            const progressPercent = Math.round((completedSubtasks / task.subtasks.length) * 100);
-            
-            subtasksHtml = `
-                <div class="task-subtasks-info">
-                    <span class="subtasks-count">📋 ${completedSubtasks}/${task.subtasks.length} sous-tâches</span>
-                    <div class="progress-bar-mini">
-                        <div class="progress-fill-mini" style="width: ${progressPercent}%"></div>
-                    </div>
-                    <span class="progress-percent">${progressPercent}%</span>
-                </div>
-            `;
-            console.log('🐛 DEBUG: Task', task.title, 'has subtasks:', task.subtasks);
-        } else {
-            console.log('🐛 DEBUG: Task', task.title, 'has no subtasks');
-        }
-        
-        // Formater la deadline avec style
-        let deadlineHtml = '';
-        if (task.deadline) {
-            const deadlineFormatted = formatDate(task.deadline);
-            if (daysRemaining !== null) {
-                if (daysRemaining < 0) {
-                    deadlineHtml = `<span class="deadline-overdue">📅 ${deadlineFormatted} (${Math.abs(daysRemaining)} jours de retard)</span>`;
-                } else if (daysRemaining === 0) {
-                    deadlineHtml = `<span class="deadline-today">📅 ${deadlineFormatted} (Aujourd'hui!)</span>`;
-                } else {
-                    deadlineHtml = `<span class="deadline-normal">📅 ${deadlineFormatted} (dans ${daysRemaining} jours)</span>`;
-                }
-            } else {
-                deadlineHtml = `<span class="deadline-normal">📅 ${deadlineFormatted}</span>`;
-            }
-        }
-        
-        html += `
-            <div class="task-card breathing ${urgencyClass}" data-task-id="${task.id}">
-                <div class="task-header">
-                    <div class="task-title-section">
-                        <h4 class="task-title">${task.title}</h4>
-                        ${urgencyText ? `<span class="urgency-badge">${urgencyText}</span>` : ''}
-                    </div>
-                    <span class="task-status status-${task.status}">${statusText}</span>
-                </div>
-                
-                <div class="task-meta-grid">
-                    <div class="meta-item">
-                        <span class="meta-icon">🏷️</span>
-                        <div class="meta-content">
-                            <span class="meta-label">Domaine</span>
-                            <span class="meta-value">${domainText}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="meta-item">
-                        <span class="meta-icon">⚙️</span>
-                        <div class="meta-content">
-                            <span class="meta-label">Caractéristique</span>
-                            <span class="meta-value">${caracteristiqueText}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="meta-item meta-wide">
-                        <span class="meta-icon">⏰</span>
-                        <div class="meta-content">
-                            <span class="meta-label">Deadline</span>
-                            ${deadlineHtml}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="task-metrics">
-                    <div class="metric-item">
-                        <div class="metric-circle priority-${Math.ceil(task.priority / 25)}">
-                            <span class="metric-value">${task.priority}</span>
-                        </div>
-                        <span class="metric-label">Priorité</span>
-                    </div>
-                    
-                    <div class="metric-item">
-                        <div class="metric-circle difficulty-${task.difficulty}">
-                            <span class="metric-value">${task.difficulty}</span>
-                        </div>
-                        <span class="metric-label">Difficulté</span>
-                    </div>
-                    
-                    <div class="metric-item metric-assignee">
-                        <div class="assignee-avatar">
-                            <span>${task.assignee ? task.assignee.charAt(0).toUpperCase() : '?'}</span>
-                        </div>
-                        <span class="metric-label">${task.assignee || 'Non assigné'}</span>
-                    </div>
-                </div>
-                
-                ${subtasksHtml}
-                
-                ${task.condition ? `
-                    <div class="task-condition">
-                        <span class="condition-icon">📝</span>
-                        <span class="condition-text">${task.condition}</span>
-                    </div>
-                ` : ''}
-                
-                <div class="task-actions">
-                    <button class="edit-btn" onclick="editTask(${task.id})">
-                        <span class="btn-icon">✏️</span>
-                        Modifier
-                    </button>
-                    <button class="delete-btn" onclick="deleteTask(${task.id})">
-                        <span class="btn-icon">🗑️</span>
-                        Supprimer
-                    </button>
-                    <button class="details-btn" onclick="showTaskDetails(${task.id})">
-                        <span class="btn-icon">👁️</span>
-                        Détails
-                    </button>
-                </div>
-            </div>
-        `;
-    });
-    
-    tasksListElement.innerHTML = html;
-    console.log('🐛 DEBUG: Tasks list updated with', filteredTasks.length, 'filtered tasks');
-}
-
-// ===========================================
-// HELPER FUNCTIONS
-// ===========================================
-
-function getSelectedTasks() {
-    const checkboxes = document.querySelectorAll('.task-checkbox:checked');
-    return Array.from(checkboxes).map(cb => parseInt(cb.value));
-}
-
-function updateQuickAssignmentUI() {
-    const selectedTasks = getSelectedTasks();
-    const assignBtn = document.getElementById('assign-selected');
-    
-    if (assignBtn) {
-        assignBtn.textContent = `Assigner (${selectedTasks.length})`;
-        assignBtn.disabled = selectedTasks.length === 0;
-    }
-}
-
-function editTask(taskId) {
-    console.log('Edit task:', taskId);
-    
-    const task = tasks.find(t => t.id === taskId);
-    if (!task) {
-        alert('Tâche non trouvée');
-        return;
-    }
-    
-    // Fill form with task data
-    const form = document.getElementById('task-form');
-    if (!form) {
-        alert('Formulaire non trouvé');
-        return;
-    }
-    
-    // Scroll to form
-    form.scrollIntoView({ behavior: 'smooth' });
-    
-    // Fill form fields
-    document.getElementById('task-title').value = task.title || '';
-    
-    // Format date for HTML date input (YYYY-MM-DD)
-    let deadlineValue = '';
-    if (task.deadline) {
-        const deadlineDate = new Date(task.deadline);
-        if (!isNaN(deadlineDate.getTime())) {
-            // Format to YYYY-MM-DD for HTML date input
-            deadlineValue = deadlineDate.toISOString().split('T')[0];
-        }
-    }
-    document.getElementById('task-deadline').value = deadlineValue;
-    
-    document.getElementById('task-status').value = task.status || 'not-started';
-    document.getElementById('task-domain').value = task.domain || 'site-dev';
-    document.getElementById('task-condition').value = task.condition || '';
-    document.getElementById('task-duration').value = task.duration || '1h';
-    document.getElementById('task-difficulty').value = task.difficulty || 5;
-    document.getElementById('task-priority').value = task.priority || 50;
-    document.getElementById('task-assignee').value = task.assignee || '';
-    
-    // Gestion du champ caractéristique
-    const caracteristiqueElement = document.getElementById('task-caracteristique');
-    if (caracteristiqueElement) {
-        caracteristiqueElement.value = task.caracteristique || '';
-    }
-    
-    // Update range displays
-    updateRangeValues();
-    
-    // Store task ID for update instead of create
-    form.dataset.editingTaskId = taskId;
-    
-    // Change button text
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (submitButton) {
-        submitButton.innerHTML = `
-            <span>Mettre à jour la tâche</span>
-            <div class="blood-drip"></div>
-        `;
-    }
-    
-    console.log('✅ Task editing form populated for task:', task.title);
-}
-
-function deleteTask(taskId) {
-    console.log('Delete task:', taskId);
-    
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) {
-        tasks = tasks.filter(t => t.id !== taskId);
-        saveTasksToStorage();
-        updateTasksList();
-        updateDashboard();
-    }
-}
-
-function showTaskDetails(taskId) {
-    console.log('Show task details:', taskId);
-    
-    const task = tasks.find(t => t.id === taskId);
-    if (!task) {
-        alert('Tâche non trouvée');
-        return;
-    }
-    
-    const modal = document.getElementById('task-modal');
-    const modalBody = document.getElementById('modal-body');
-    
-    if (!modal || !modalBody) {
-        // Fallback to alert if modal not available
-        let details = `
-Titre: ${task.title}
-Domaine: ${getDomainText(task.domain)}
-Deadline: ${formatDate(task.deadline)}
-Priorité: ${task.priority}/100
-Difficulté: ${task.difficulty}/10
-Statut: ${getStatusText(task.status)}
-Assigné à: ${task.assignee}
-        `;
-        
-        if (task.condition) {
-            details += `\nCondition: ${task.condition}`;
-        }
-        
-        if (task.subtasks && task.subtasks.length > 0) {
-            details += '\n\nSous-tâches:';
-            task.subtasks.forEach((subtask, index) => {
-                details += `\n- ${subtask.text || subtask.title} (${subtask.completed ? 'Terminée' : 'En cours'})`;
-            });
-        }
-        
-        alert(details);
-        return;
-    }
-    
-    // Build detailed modal content
-    let subtasksHtml = '';
-    if (task.subtasks && task.subtasks.length > 0) {
-        const completedSubtasks = task.subtasks.filter(st => st.completed).length;
-        const progressPercent = Math.round((completedSubtasks / task.subtasks.length) * 100);
-        
-        subtasksHtml = `
-            <div class="task-detail-section">
-                <h4>Sous-tâches (${completedSubtasks}/${task.subtasks.length} terminées)</h4>
-                <div class="subtasks-progress-container">
-                    <div class="progress-bar-detail">
-                        <div class="progress-fill-detail" style="width: ${progressPercent}%"></div>
-                    </div>
-                    <span class="progress-percent-detail">${progressPercent}%</span>
-                </div>
-                <ul class="subtasks-detail-list">
-                    ${task.subtasks.map((subtask, index) => `
-                        <li class="${subtask.completed ? 'completed' : 'pending'}">
-                            <input type="checkbox" 
-                                   id="subtask-modal-${index}" 
-                                   class="subtask-modal-checkbox"
-                                   ${subtask.completed ? 'checked' : ''}
-                                   onchange="toggleSubtaskInModal(${task.id}, ${index})">
-                            <label for="subtask-modal-${index}" class="subtask-modal-label">
-                                ${subtask.text || subtask.title}
-                            </label>
-                        </li>
-                    `).join('')}
-                </ul>
-            </div>
-        `;
-    }
-    
-    const daysRemaining = calculateDaysRemaining(task.deadline);
-    let deadlineInfo = formatDate(task.deadline);
-    if (daysRemaining !== null) {
-        if (daysRemaining > 0) {
-            deadlineInfo += ` (dans ${daysRemaining} jours)`;
-        } else if (daysRemaining === 0) {
-            deadlineInfo += ' (aujourd\'hui)';
-        } else {
-            deadlineInfo += ` (en retard de ${Math.abs(daysRemaining)} jours)`;
-        }
-    }
-    
-    modalBody.innerHTML = `
-        <h3 class="task-modal-title">${task.title}</h3>
-        <div class="task-detail-grid">
-            <div class="task-detail-section">
-                <h4>Informations générales</h4>
-                <p><strong>Domaine:</strong> ${getDomainText(task.domain)}</p>
-                <p><strong>Statut:</strong> <span class="status-${task.status}">${getStatusText(task.status)}</span></p>
-                <p><strong>Deadline:</strong> ${deadlineInfo}</p>
-                <p><strong>Assigné à:</strong> ${task.assignee}</p>
-            </div>
-            
-            <div class="task-detail-section">
-                <h4>Évaluation</h4>
-                <p><strong>Priorité:</strong> ${task.priority}/100</p>
-                <p><strong>Difficulté:</strong> ${task.difficulty}/10</p>
-                <p><strong>Durée estimée:</strong> ${task.duration}</p>
-            </div>
-            
-            ${task.condition ? `
-                <div class="task-detail-section">
-                    <h4>Condition</h4>
-                    <p>${task.condition}</p>
-                </div>
-            ` : ''}
-            
-            ${subtasksHtml}
-        </div>
-    `;
-    
-    // Show modal
-    modal.style.display = 'block';
-    
-    // Setup close functionality
-    const closeBtn = modal.querySelector('.close');
-    if (closeBtn) {
-        closeBtn.onclick = () => {
-            modal.style.display = 'none';
-    };
-}
-
-// Fonction pour basculer l'état d'une sous-tâche depuis la modal
-function toggleSubtaskInModal(taskId, subtaskIndex) {
-    console.log('🐛 DEBUG: toggleSubtaskInModal called with:', taskId, subtaskIndex);
-    
-    const task = tasks.find(t => t.id === taskId);
-    if (!task || !task.subtasks || !task.subtasks[subtaskIndex]) {
-        console.error('❌ Task or subtask not found');
-        return;
-    }
-    
-    // Basculer l'état de la sous-tâche
-    task.subtasks[subtaskIndex].completed = !task.subtasks[subtaskIndex].completed;
-    
-    // Recalculer le pourcentage de progression
-    const completedSubtasks = task.subtasks.filter(st => st.completed).length;
-    const progressPercent = Math.round((completedSubtasks / task.subtasks.length) * 100);
-    
-    // Mettre à jour l'affichage dans la modal
-    const progressBar = document.querySelector('.progress-fill-detail');
-    const progressPercentElement = document.querySelector('.progress-percent-detail');
-    const subtaskCountHeader = document.querySelector('.task-detail-section h4');
-    
-    if (progressBar) {
-        progressBar.style.width = progressPercent + '%';
-    }
-    
-    if (progressPercentElement) {
-        progressPercentElement.textContent = progressPercent + '%';
-    }
-    
-    if (subtaskCountHeader) {
-        subtaskCountHeader.textContent = `Sous-tâches (${completedSubtasks}/${task.subtasks.length} terminées)`;
-    }
-    
-    // Mettre à jour la classe de la ligne
-    const listItem = document.querySelector(`#subtask-modal-${subtaskIndex}`).closest('li');
-    if (listItem) {
-        listItem.className = task.subtasks[subtaskIndex].completed ? 'completed' : 'pending';
-    }
-    
-    // Sauvegarder les modifications
-    saveTasksToStorage();
-    
-    // Mettre à jour la liste des tâches en arrière-plan
-    updateTasksList();
-    updateDashboard();
-    
-    console.log('✅ Subtask toggled successfully');
-}    // Close on background click
-    modal.onclick = (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    };
-    
-    console.log('✅ Task details modal opened for:', task.title);
-}
-
-function calculateDaysRemaining(deadline) {
-    if (!deadline) return null;
-    
-    const deadlineDate = new Date(deadline);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    deadlineDate.setHours(0, 0, 0, 0);
-    
-    const diffTime = deadlineDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    return diffDays;
-}
-
-function formatDate(dateString) {
-    if (!dateString) return 'Non définie';
-    
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-}
-
-function getStatusText(status) {
-    const statusMap = {
-        'not-started': 'Non commencée',
-        'in-progress': 'En cours',
-        'completed': 'Terminée',
-        'blocked': 'Bloquée'
-    };
-    return statusMap[status] || status;
-}
-
-function getDomainText(domain) {
-    const domainMap = {
-        'frontend': 'Frontend',
-        'backend': 'Backend',
-        'design': 'Design',
-        'testing': 'Tests',
-        'deployment': 'Déploiement',
-        'documentation': 'Documentation',
-        'research': 'Recherche',
-        'other': 'Autre'
-    };
-    return domainMap[domain] || domain;
-}
-
-// ===========================================
-// GESTION DES SPÉCIFICATIONS (CRUD)
-// ===========================================
-
-// Ajouter une nouvelle spécification
-function addSpecification() {
-    console.log('➕ Adding new specification...');
-    
-    const title = document.getElementById('spec-title')?.value.trim();
-    const domain = document.getElementById('spec-domain')?.value;
-    const priority = parseInt(document.getElementById('spec-priority')?.value) || 50;
-    const description = document.getElementById('spec-description')?.value.trim();
-    const status = document.getElementById('spec-status')?.value || 'not-started';
-
-    console.log('📝 Form values:', { title, domain, priority, description, status });
-
-    if (!title || !description) {
-        console.warn('⚠️ Missing required fields');
-        showNotification('Veuillez remplir le titre et la description', 'error');
-        return;
-    }
-
-    const newSpec = {
-        id: 'spec-' + Date.now(),
-        title: title,
-        domain: domain,
-        description: description,
-        priority: priority,
-        status: status
-    };
-
-    console.log('💾 New specification created:', newSpec);
-
-    specifications.push(newSpec);
-    saveSpecificationsToStorage();
-    updateSpecificationsList();
-    clearSpecificationForm();
-    showNotification('Spécification ajoutée avec succès', 'success');
-    
-    console.log('✅ Specification added successfully');
-}
-
-// Modifier une spécification existante
-function editSpecification(specId) {
-    const spec = specifications.find(s => s.id === specId);
-    if (!spec) {
-        showNotification('Spécification non trouvée', 'error');
-        return;
-    }
-
-    // Remplir le formulaire avec les données existantes
-    document.getElementById('spec-title').value = spec.title;
-    document.getElementById('spec-domain').value = spec.domain;
-    document.getElementById('spec-priority').value = spec.priority;
-    document.getElementById('spec-description').value = spec.description;
-    document.getElementById('spec-status').value = spec.status;
-
-    // Modifier le bouton pour la mise à jour
-    const submitBtn = document.getElementById('spec-submit-btn');
-    if (submitBtn) {
-        submitBtn.textContent = 'Mettre à jour';
-        submitBtn.onclick = () => updateSpecification(specId);
-    }
-}
-
-// Mettre à jour une spécification
-function updateSpecification(specId) {
-    const title = document.getElementById('spec-title')?.value.trim();
-    const domain = document.getElementById('spec-domain')?.value;
-    const priority = parseInt(document.getElementById('spec-priority')?.value) || 50;
-    const description = document.getElementById('spec-description')?.value.trim();
-    const status = document.getElementById('spec-status')?.value || 'not-started';
-
-    if (!title || !description) {
-        showNotification('Veuillez remplir le titre et la description', 'error');
-        return;
-    }
-
-    const specIndex = specifications.findIndex(s => s.id === specId);
-    if (specIndex === -1) {
-        showNotification('Spécification non trouvée', 'error');
-        return;
-    }
-
-    specifications[specIndex] = {
-        ...specifications[specIndex],
-        title: title,
-        domain: domain,
-        description: description,
-        priority: priority,
-        status: status
-    };
-
-    saveSpecificationsToStorage();
-    updateSpecificationsList();
-    clearSpecificationForm();
-    showNotification('Spécification mise à jour avec succès', 'success');
-
-    // Remettre le bouton en mode ajout
-    const submitBtn = document.getElementById('spec-submit-btn');
-    if (submitBtn) {
-        submitBtn.textContent = 'Ajouter';
-        submitBtn.onclick = addSpecification;
-    }
-}
-
-// Supprimer une spécification
-function deleteSpecification(specId) {
-    console.log('🗑️ Delete specification called with ID:', specId);
-    console.log('📊 Current specifications:', specifications.length);
-    
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette spécification ?')) {
-        console.log('❌ User cancelled deletion');
-        return;
-    }
-
-    const specIndex = specifications.findIndex(s => s.id === specId);
-    console.log('🔍 Found specification at index:', specIndex);
-    
-    if (specIndex === -1) {
-        console.error('❌ Specification not found for ID:', specId);
-        showNotification('Spécification non trouvée', 'error');
-        return;
-    }
-
-    specifications.splice(specIndex, 1);
-    saveSpecificationsToStorage();
-    updateSpecificationsList();
-    showNotification('Spécification supprimée avec succès', 'success');
-    console.log('✅ Specification deleted successfully');
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = './css/specifications.css';
+    document.head.appendChild(link);
+    console.log('✅ Specifications CSS loaded');
 }
 
 // Mettre à jour l'affichage de la liste des spécifications
@@ -2356,10 +1425,13 @@ function clearSpecificationForm() {
 function initializeSpecifications() {
     console.log('🔧 Initializing specifications management...');
     
+    // Load specifications CSS
+    loadSpecificationCSS();
+    
     loadSpecificationsFromStorage();
     updateSpecificationsList();
-    updateTaskAssignmentSelects(); // Mettre à jour les dropdowns d'assignation
-    updateSpecificationStats(); // Mettre à jour les statistiques
+    updateTaskAssignmentSelects();
+    updateSpecificationStats();
     
     // Ajouter les event listeners
     const submitBtn = document.getElementById('spec-submit-btn');
